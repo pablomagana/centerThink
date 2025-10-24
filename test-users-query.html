@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Supabase Users Query</title>
+</head>
+<body>
+  <h1>Test Users Query</h1>
+  <button onclick="testQuery()">Test Query</button>
+  <pre id="result"></pre>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+    const supabaseUrl = 'https://lzqhfgeduchvizykaqih.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6cWhmZ2VkdWNodml6eWthcWloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5OTk5MTgsImV4cCI6MjA3NjU3NTkxOH0.If7jNdiX9shovi9wEabzgOQgan3DP-2mbUE13P5wOpI'
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    window.testQuery = async function() {
+      const resultEl = document.getElementById('result')
+      resultEl.textContent = 'Loading...'
+
+      try {
+        // Test 1: Get current user
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+        console.log('Current user:', user)
+        console.log('Auth error:', authError)
+
+        // Test 2: Query user_profiles
+        const { data, error, count } = await supabase
+          .from('user_profiles')
+          .select('*', { count: 'exact' })
+
+        console.log('Query result:', data)
+        console.log('Query error:', error)
+        console.log('Count:', count)
+
+        resultEl.textContent = JSON.stringify({
+          currentUser: user ? { id: user.id, email: user.email } : null,
+          authError,
+          users: data,
+          queryError: error,
+          count
+        }, null, 2)
+      } catch (err) {
+        console.error('Error:', err)
+        resultEl.textContent = 'Error: ' + err.message
+      }
+    }
+  </script>
+</body>
+</html>
