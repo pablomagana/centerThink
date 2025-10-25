@@ -79,10 +79,9 @@ POST /functions/v1/register-user
 3. Verifica que la ciudad seleccionada existe
 4. Crea el usuario en `auth.users` con `email_confirm: false`
 5. Crea el perfil en `user_profiles` con rol `user`
-6. Genera un link de confirmación de email único con token
-7. Envía email de confirmación con el link usando EmailJS
-8. El usuario debe confirmar su email haciendo clic en el link
-9. Una vez confirmado, puede acceder con sus credenciales
+6. **Supabase envía automáticamente** el email de confirmación usando el template nativo configurado en el Dashboard
+7. El usuario debe confirmar su email haciendo clic en el link
+8. Una vez confirmado, puede acceder con sus credenciales
 
 ## Seguridad
 
@@ -99,28 +98,35 @@ POST /functions/v1/register-user
 - **Rol asignado**: `user` (fijo)
 - **Ciudades**: Solo la ciudad seleccionada por el usuario
 
-## Configuración de EmailJS
+## Configuración de Emails de Confirmación
 
-Para que el envío de emails funcione correctamente, debes configurar las siguientes variables de entorno en Supabase:
+El sistema usa el **método NATIVO de Supabase** para enviar emails de confirmación automáticamente.
 
-```bash
-# Configurar secrets en Supabase Edge Functions
-supabase secrets set EMAILJS_SERVICE_ID=your_service_id
-supabase secrets set EMAILJS_CONFIRMATION_TEMPLATE_ID=your_confirmation_template_id
-supabase secrets set EMAILJS_PUBLIC_KEY=your_public_key
-supabase secrets set APP_URL=https://your-app-url.com
-```
+### Configuración en Supabase Dashboard (5 minutos)
 
-### Template de EmailJS Requerido
+**1. Configurar Template de Email:**
+   - Ve a: `Authentication → Email Templates`
+   - Selecciona: **"Confirm signup"**
+   - **Subject:** `Confirma tu cuenta en centerThink 🎉`
+   - **Message Body:** Copia el HTML de `docs/supabase-email-templates/confirmation-email.html`
+   - Haz clic en **Save**
 
-Crea un template en EmailJS con las siguientes variables:
-- `{{to_email}}` - Email del destinatario
-- `{{user_name}}` - Nombre completo del usuario
-- `{{confirmation_link}}` - Link de confirmación generado por Supabase
-- `{{app_url}}` - URL de la aplicación
-- `{{from_name}}` - Nombre del remitente (centerThink)
+**2. Configurar URLs:**
+   - Ve a: `Authentication → URL Configuration`
+   - **Site URL:** `https://centerthink.pages.dev`
+   - **Redirect URLs:**
+     ```
+     https://centerthink.pages.dev/**
+     http://localhost:3000/**
+     ```
+   - Guarda cambios
 
-Ver archivo de referencia: `docs/email-confirmation-template.html`
+**3. ¡Listo!** Los emails se enviarán automáticamente al registrar usuarios.
+
+### Documentación Completa
+- **Guía rápida:** `docs/SETUP-EMAILS.md`
+- **Guía detallada:** `docs/supabase-email-templates/README.md`
+- **Template HTML:** `docs/supabase-email-templates/confirmation-email.html`
 
 ## Notas
 
@@ -128,4 +134,4 @@ Ver archivo de referencia: `docs/email-confirmation-template.html`
 - Los usuarios registrados solo tienen acceso a funcionalidades operativas (Events, Speakers, Venues, Orders, Calendar)
 - No tienen acceso a gestión de usuarios ni ciudades
 - El link de confirmación expira según la configuración de Supabase (por defecto 24 horas)
-- Si EmailJS no está configurado, el registro funciona pero el usuario no recibirá el email (el link se muestra en logs)
+- Si el template de email no está configurado en Supabase, los usuarios NO podrán confirmar su cuenta

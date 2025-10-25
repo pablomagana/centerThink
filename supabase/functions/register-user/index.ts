@@ -127,11 +127,12 @@ serve(async (req) => {
     }
 
     // 1. Crear usuario en auth con confirmación de email requerida
+    // Supabase enviará automáticamente el email de confirmación usando el template nativo
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin
       .createUser({
         email,
         password,
-        email_confirm: false, // Requiere confirmación de email
+        email_confirm: false, // Requiere confirmación de email - Supabase enviará el email automáticamente
         user_metadata: {
           first_name,
           last_name
@@ -186,80 +187,11 @@ serve(async (req) => {
       )
     }
 
-    // 3. Generar y enviar link de confirmación de email
-    let confirmationLinkSent = false
-    try {
-      // Generar el token de confirmación
-      const { data: emailData, error: emailError } = await supabaseAdmin.auth.admin
-        .generateLink({
-          type: 'signup',
-          email: email,
-          options: {
-            redirectTo: `${Deno.env.get('APP_URL') || 'http://localhost:3000'}/login`
-          }
-        })
-
-      if (emailError) {
-        console.error('Error generating confirmation link:', emailError)
-        // No fallar el registro si el email falla, pero loguear el error
-      } else {
-        console.log(`Link de confirmación generado para: ${email}`)
-        const confirmationLink = emailData.properties.action_link
-        console.log(`Link: ${confirmationLink}`)
-
-        // Enviar email usando EmailJS
-        try {
-          const emailJSServiceId = Deno.env.get('EMAILJS_SERVICE_ID')
-          const emailJSTemplateId = Deno.env.get('EMAILJS_CONFIRMATION_TEMPLATE_ID')
-          const emailJSPublicKey = Deno.env.get('EMAILJS_PUBLIC_KEY')
-          const appUrl = Deno.env.get('APP_URL') || 'http://localhost:3000'
-
-          if (emailJSServiceId && emailJSTemplateId && emailJSPublicKey) {
-            const emailJSPayload = {
-              service_id: emailJSServiceId,
-              template_id: emailJSTemplateId,
-              user_id: emailJSPublicKey,
-              template_params: {
-                to_email: email,
-                to_name: `${first_name} ${last_name}`,
-                user_name: `${first_name} ${last_name}`,
-                confirmation_link: confirmationLink,
-                app_url: appUrl,
-                from_name: 'centerThink'
-              }
-            }
-
-            console.log('Enviando email de confirmación vía EmailJS...')
-
-            const emailResponse = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(emailJSPayload)
-            })
-
-            if (emailResponse.ok) {
-              console.log('✅ Email de confirmación enviado exitosamente vía EmailJS')
-              confirmationLinkSent = true
-            } else {
-              const errorText = await emailResponse.text()
-              console.error('❌ Error al enviar email vía EmailJS:', errorText)
-            }
-          } else {
-            console.warn('⚠️ EmailJS no configurado - variables de entorno faltantes')
-            console.log('Link de confirmación (para testing):', confirmationLink)
-          }
-        } catch (emailSendError) {
-          console.error('Error al enviar email vía EmailJS:', emailSendError)
-        }
-      }
-    } catch (emailErr) {
-      console.error('Error sending confirmation email:', emailErr)
-      // No fallar el registro si el email falla
-    }
-
-    console.log(`Usuario registrado: ${email} - Email de confirmación ${confirmationLinkSent ? 'enviado' : 'NO enviado (revisar configuración)'}`)
+    // 3. Email de confirmación enviado automáticamente por Supabase
+    // Como se creó el usuario con email_confirm: false, Supabase enviará automáticamente
+    // el email de confirmación usando el template configurado en el Dashboard
+    console.log(`✅ Usuario registrado: ${email}`)
+    console.log(`📧 Supabase enviará automáticamente el email de confirmación`)
 
     return new Response(
       JSON.stringify({
