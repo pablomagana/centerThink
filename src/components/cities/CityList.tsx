@@ -1,16 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  MapPin, 
-  Edit2, 
+import {
+  MapPin,
+  Edit2,
   Globe,
-  Map
+  Map,
+  Trash2
 } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-export default function CitiesList({ cities, onEdit }) {
+export default function CitiesList({ cities, onEdit, onDelete }) {
+  const [cityToDelete, setCityToDelete] = useState(null);
+
+  const handleDeleteClick = (city) => {
+    setCityToDelete(city);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (cityToDelete) {
+      await onDelete(cityToDelete.id);
+      setCityToDelete(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setCityToDelete(null);
+  };
   if (cities.length === 0) {
     return (
       <Card className="text-center py-12">
@@ -59,14 +86,23 @@ export default function CitiesList({ cities, onEdit }) {
                     )}
                   </div>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onEdit(city)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <Edit2 className="w-4 h-4" />
-                </Button>
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onEdit(city)}
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteClick(city)}
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </CardHeader>
 
@@ -87,7 +123,7 @@ export default function CitiesList({ cities, onEdit }) {
 
               <div className="pt-2 border-t border-slate-100">
                 <p className="text-xs text-slate-400">
-                  Creada el {new Date(city.created_date).toLocaleDateString('es-ES', {
+                  Creada el {new Date(city.created_at).toLocaleDateString('es-ES', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -98,6 +134,31 @@ export default function CitiesList({ cities, onEdit }) {
           </Card>
         </motion.div>
       ))}
+
+      <AlertDialog open={!!cityToDelete} onOpenChange={handleCancelDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar ciudad?</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Estás seguro de que deseas eliminar la ciudad{" "}
+              <strong>{cityToDelete?.name}</strong>?
+              Esta acción no se puede deshacer y solo es posible si la ciudad
+              no tiene eventos asociados.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelDelete}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

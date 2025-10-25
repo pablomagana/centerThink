@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Layout from './Layout';
 import LoginPage from './Pages/Login';
+import RegisterPage from './Pages/Register';
 import EventsPage from './Pages/Events';
 import CalendarPage from './Pages/Calendar';
 import SpeakersPage from './Pages/Speakers';
@@ -39,6 +40,10 @@ function AppRoutes() {
       <Route
         path="/login"
         element={user ? <Navigate to="/events" replace /> : <LoginPage />}
+      />
+      <Route
+        path="/register"
+        element={user ? <Navigate to="/events" replace /> : <RegisterPage />}
       />
       <Route
         path="/"

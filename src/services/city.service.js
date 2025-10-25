@@ -34,11 +34,7 @@ export const cityService = {
   async create(cityData) {
     const { data, error } = await supabase
       .from('cities')
-      .insert([{
-        ...cityData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }])
+      .insert([cityData])
       .select()
       .single()
 
@@ -49,10 +45,7 @@ export const cityService = {
   async update(id, cityData) {
     const { data, error } = await supabase
       .from('cities')
-      .update({
-        ...cityData,
-        updated_at: new Date().toISOString()
-      })
+      .update(cityData)
       .eq('id', id)
       .select()
       .single()

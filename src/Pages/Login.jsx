@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Calendar as CalendarIcon, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -37,10 +37,10 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-emerald-600 rounded-2xl mb-4 shadow-lg">
-            <CalendarIcon className="w-10 h-10 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
+            <img src="/favicon.svg" alt="CenterThink" className="w-16 h-16 rounded-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900">EventManager</h1>
+          <h1 className="text-3xl font-bold text-slate-900">CenterThink</h1>
           <p className="text-slate-600 mt-2">Gestión de Thinkglaos</p>
         </div>
 
@@ -104,13 +104,24 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-slate-600">
-                ¿Necesitas ayuda?{' '}
-                <a href="mailto:support@example.com" className="text-blue-600 hover:underline">
-                  Contacta soporte
-                </a>
-              </p>
+            <div className="mt-6 space-y-4">
+              <div className="text-center">
+                <Link
+                  to="/register"
+                  className="text-sm text-blue-600 hover:underline font-medium"
+                >
+                  ¿No tienes cuenta? Regístrate aquí
+                </Link>
+              </div>
+
+              <div className="text-center">
+                <p className="text-sm text-slate-600">
+                  ¿Necesitas ayuda?{' '}
+                  <a href="mailto:info@pablomagana.es" className="text-blue-600 hover:underline">
+                    Contacta soporte
+                  </a>
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>

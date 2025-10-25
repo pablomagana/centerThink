@@ -3,23 +3,26 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserPlus, X, Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
+import { UserPlus, X, Loader2, KeyRound, Mail, Eye, EyeOff } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/utils";
 import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { User } from "@/entities/User.js";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface UserCreateFormProps {
   user?: any; // Si existe, es modo edición
@@ -53,6 +56,14 @@ export default function UserCreateForm({
     cities: user?.cities || [] as string[]
   });
 
+  // Estados para reseteo de contraseña
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [resetMethod, setResetMethod] = useState<'manual' | 'email' | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState<string | null>(null);
+
   // Filtrar ciudades disponibles según el rol del usuario actual
   const availableCities = currentUserRole === "admin"
     ? cities
@@ -74,6 +85,38 @@ export default function UserCreateForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
+  };
+
+  const handlePasswordReset = async () => {
+    if (!user?.id) return;
+
+    setIsResetting(true);
+    setResetSuccess(null);
+
+    try {
+      if (resetMethod === 'email') {
+        // Enviar email de recuperación
+        await User.sendPasswordResetEmail(user.id);
+        setResetSuccess(`Email de recuperación enviado a ${user.email}`);
+        setShowPasswordReset(false);
+        setResetMethod(null);
+      } else if (resetMethod === 'manual' && newPassword) {
+        // Establecer contraseña manualmente
+        if (newPassword.length < 6) {
+          alert("La contraseña debe tener al menos 6 caracteres");
+          return;
+        }
+        await User.resetPassword(user.id, newPassword);
+        setResetSuccess(`Contraseña actualizada exitosamente`);
+        setShowPasswordReset(false);
+        setResetMethod(null);
+        setNewPassword("");
+      }
+    } catch (error: any) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   const selectedCities = availableCities.filter(city => formData.cities.includes(city.id));
@@ -262,6 +305,74 @@ export default function UserCreateForm({
           </div>
         </div>
 
+        {/* Password Reset Section - Solo en modo edición */}
+        {isEditMode && (
+          <div className="border-t pt-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">Resetear Contraseña</h3>
+                  <p className="text-sm text-slate-600">
+                    Establece una nueva contraseña o envía un email de recuperación al usuario
+                  </p>
+                </div>
+              </div>
+
+              {resetSuccess && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <p className="text-sm text-green-700">{resetSuccess}</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setResetMethod('manual');
+                    setShowPasswordReset(true);
+                  }}
+                  disabled={isSubmitting || isResetting}
+                  className="h-12 justify-start"
+                >
+                  <KeyRound className="w-4 h-4 mr-2" />
+                  Establecer Nueva Contraseña
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={async () => {
+                    if (confirm(`¿Enviar email de recuperación a ${user?.email}?`)) {
+                      setResetMethod('email');
+                      setIsResetting(true);
+                      setResetSuccess(null);
+                      try {
+                        await User.sendPasswordResetEmail(user?.id);
+                        setResetSuccess(`Email de recuperación enviado a ${user?.email}`);
+                      } catch (error: any) {
+                        alert(`Error: ${error.message}`);
+                      } finally {
+                        setIsResetting(false);
+                        setResetMethod(null);
+                      }
+                    }
+                  }}
+                  disabled={isSubmitting || isResetting}
+                  className="h-12 justify-start"
+                >
+                  {isResetting && resetMethod === 'email' ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Mail className="w-4 h-4 mr-2" />
+                  )}
+                  Enviar Email de Recuperación
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Error Message */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -300,6 +411,87 @@ export default function UserCreateForm({
           </Button>
         </DialogFooter>
       </form>
+
+      {/* Modal para establecer contraseña manualmente */}
+      <AlertDialog open={showPasswordReset && resetMethod === 'manual'} onOpenChange={setShowPasswordReset}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Establecer Nueva Contraseña</AlertDialogTitle>
+            <AlertDialogDescription>
+              Ingresa una nueva contraseña para {user?.first_name} {user?.last_name}.
+              La contraseña debe tener al menos 6 caracteres.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="newPassword">Nueva Contraseña</Label>
+              <div className="relative">
+                <Input
+                  id="newPassword"
+                  type={showPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Mínimo 6 caracteres"
+                  className="h-12 px-4 pr-12"
+                  autoComplete="new-password"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-12 px-3 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-slate-500" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-slate-500" />
+                  )}
+                </Button>
+              </div>
+              <p className="text-xs text-slate-500">
+                {newPassword.length > 0 && newPassword.length < 6 && (
+                  <span className="text-red-600">La contraseña debe tener al menos 6 caracteres</span>
+                )}
+                {newPassword.length >= 6 && (
+                  <span className="text-green-600">Contraseña válida</span>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setShowPasswordReset(false);
+                setResetMethod(null);
+                setNewPassword("");
+              }}
+              disabled={isResetting}
+            >
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handlePasswordReset}
+              disabled={isResetting || newPassword.length < 6}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {isResetting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Actualizando...
+                </>
+              ) : (
+                <>
+                  <KeyRound className="w-4 h-4 mr-2" />
+                  Establecer Contraseña
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

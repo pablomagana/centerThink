@@ -1,6 +1,11 @@
 
 import React, { useState, useEffect, useContext } from 'react';
-import { base44 } from '@/api/base44Client';
+import { useParams } from 'react-router-dom';
+import { Event } from '@/entities/Event';
+import { Speaker } from '@/entities/Speaker';
+import { Venue } from '@/entities/Venue';
+import { City } from '@/entities/City';
+import { User } from '@/entities/User';
 import { AppContext } from '@/components/AppContextProvider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +18,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export default function EventDetailsPage() {
+    const { id: eventId } = useParams();
     const [event, setEvent] = useState(null);
     const [relatedData, setRelatedData] = useState({ speaker: null, venue: null, city: null, volunteers: [] });
     const [isLoading, setIsLoading] = useState(true);
@@ -20,38 +26,31 @@ export default function EventDetailsPage() {
     const [isConfirming, setIsConfirming] = useState(false);
     const { currentUser } = useContext(AppContext);
 
-    const getEventId = () => {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('id');
-    };
-
     const loadData = async () => {
         setIsLoading(true);
-        const eventId = getEventId();
         if (!eventId) {
             setIsLoading(false);
             return;
         }
 
         try {
-            const eventData = await base44.entities.Event.get(eventId);
+            const eventData = await Event.get(eventId);
             setEvent(eventData);
-            
+
             let allUsers = [];
             // Por seguridad, solo los admins pueden listar todos los usuarios.
             // Los voluntarios solo pueden verse a sí mismos.
             if(currentUser?.role === 'admin') {
-                allUsers = await base44.entities.User.list();
+                allUsers = await User.list();
             } else if (currentUser) {
                 // Para el voluntario, solo cargamos su propio usuario para mostrar su nombre.
-                const me = await base44.auth.me();
-                allUsers = [me];
+                allUsers = [currentUser];
             }
 
             const [speaker, venue, city] = await Promise.all([
-                eventData.speaker_id ? base44.entities.Speaker.get(eventData.speaker_id) : null,
-                eventData.venue_id ? base44.entities.Venue.get(eventData.venue_id) : null,
-                eventData.city_id ? base44.entities.City.get(eventData.city_id) : null,
+                eventData.speaker_id ? Speaker.get(eventData.speaker_id) : null,
+                eventData.venue_id ? Venue.get(eventData.venue_id) : null,
+                eventData.city_id ? City.get(eventData.city_id) : null,
             ]);
 
             const volunteerDetails = (eventData.confirmed_volunteers || []).map(v => {
@@ -87,7 +86,7 @@ export default function EventDetailsPage() {
     }, [currentUser]); // Added currentUser to dependencies to re-load data if user changes
 
     const handleConfirmAssistance = async () => {
-        if (!arrivalTime || !currentUser) return;
+        if (!arrivalTime || !currentUser || !event) return;
 
         setIsConfirming(true);
         const newVolunteer = { user_id: currentUser.id, arrival_time: arrivalTime };
@@ -98,7 +97,7 @@ export default function EventDetailsPage() {
         const updatedVolunteers = [...existingVolunteers, newVolunteer];
 
         try {
-            await base44.entities.Event.update(event.id, { confirmed_volunteers: updatedVolunteers });
+            await Event.update(event.id, { confirmed_volunteers: updatedVolunteers });
             await loadData(); // Reload data to show the new confirmation
         } catch (error) {
             console.error("Error confirming assistance:", error);
@@ -107,11 +106,11 @@ export default function EventDetailsPage() {
     };
 
     const handleCancelAssistance = async () => {
-      if (!currentUser) return;
+      if (!currentUser || !event) return;
       setIsConfirming(true);
       const updatedVolunteers = event.confirmed_volunteers.filter(v => v.user_id !== currentUser.id);
       try {
-            await base44.entities.Event.update(event.id, { confirmed_volunteers: updatedVolunteers });
+            await Event.update(event.id, { confirmed_volunteers: updatedVolunteers });
             await loadData(); // Reload data
         } catch (error) {
             console.error("Error canceling assistance:", error);

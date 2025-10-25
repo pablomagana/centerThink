@@ -172,7 +172,7 @@ export default function EventsList({
                 </div>
 
                 <div className="pt-4 border-t border-slate-100 mt-auto">
-                    <Link to={createPageUrl(`EventDetails?id=${event.id}`)}>
+                    <Link to={`/events/${event.id}`}>
                       <Button variant="outline" className="w-full">
                         Ver Detalles y Voluntarios
                         <ArrowRight className="w-4 h-4 ml-2" />

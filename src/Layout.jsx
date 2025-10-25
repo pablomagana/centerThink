@@ -13,7 +13,8 @@ import {
   User as UserIcon,
   CalendarDays,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  LogOut
 } from "lucide-react";
 import {
   Sidebar,
@@ -38,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { AppContext, AppProvider } from "@/components/AppContextProvider";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navigationItems = [
   {
@@ -90,6 +92,7 @@ const settingsItems = [
 function MainLayout({ children, currentPageName }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const {
     currentUser,
     userCities,
@@ -99,6 +102,15 @@ function MainLayout({ children, currentPageName }) {
   } = useContext(AppContext);
 
   const [debugExpanded, setDebugExpanded] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  };
 
   console.log('=== LAYOUT DEBUG ===');
   console.log('currentUser:', currentUser);
@@ -183,7 +195,7 @@ function MainLayout({ children, currentPageName }) {
   return (
     <SidebarProvider>
       {/* DEBUG PANEL - Remove this after debugging */}
-      <div className={`fixed top-4 right-4 bg-red-50 border-2 border-red-500 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+      <div className={`fixed bottom-4 right-4 bg-red-50 border-2 border-red-500 rounded-lg shadow-lg z-50 transition-all duration-300 ${
         debugExpanded ? 'max-w-sm' : 'w-auto'
       }`}>
         <div className="flex items-start justify-between gap-2 p-4 pb-2">
@@ -229,21 +241,21 @@ function MainLayout({ children, currentPageName }) {
         )}
       </div>
 
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50">
-        <Sidebar className="border-r border-slate-200/60 bg-white/80 backdrop-blur-sm flex flex-col">
+      <div className="h-screen flex w-full bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 overflow-hidden">
+        <Sidebar className="border-r border-slate-200/60 bg-white/80 backdrop-blur-sm flex flex-col h-full">
           <SidebarHeader className="border-b border-slate-200/60 p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                <CalendarIcon className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 flex items-center justify-center">
+                <img src="/favicon.svg" alt="CenterThink" className="w-10 h-10 rounded-xl" />
               </div>
               <div>
-                <h2 className="font-bold text-slate-900 text-lg">EventManager</h2>
+                <h2 className="font-bold text-slate-900 text-lg">CenterThink</h2>
                 <p className="text-xs text-slate-500">Gestión de Eventos</p>
               </div>
             </div>
           </SidebarHeader>
           
-          <SidebarContent className="px-3 py-4 flex-1">
+          <SidebarContent className="px-3 py-4 flex-1 overflow-y-auto">
             <SidebarGroup>
               <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
                 Principal
@@ -301,36 +313,56 @@ function MainLayout({ children, currentPageName }) {
             <div className="px-2">
               <CitySelector />
             </div>
-            <button
-              onClick={() => navigate('/profile')}
-              className="flex items-center gap-3 w-full hover:bg-slate-50 p-2 rounded-lg transition-colors duration-200 cursor-pointer"
-              title="Ver mi perfil"
-            >
-              <div className="w-10 h-10 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full flex items-center justify-center">
-                <UserIcon className="w-5 h-5 text-slate-600" />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="font-semibold text-slate-900 text-sm truncate">
-                  {currentUser?.first_name} {currentUser?.last_name}
-                </p>
-                <p className="text-xs text-blue-600 hover:text-blue-700 truncate hover:underline">
-                  {currentUser?.email}
-                </p>
-              </div>
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex items-center gap-3 w-full hover:bg-slate-50 p-2 rounded-lg transition-colors duration-200 cursor-pointer"
+                  title="Opciones de usuario"
+                >
+                  <div className="w-10 h-10 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full flex items-center justify-center">
+                    <UserIcon className="w-5 h-5 text-slate-600" />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="font-semibold text-slate-900 text-sm truncate">
+                      {currentUser?.first_name} {currentUser?.last_name}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {currentUser?.email}
+                    </p>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => navigate('/profile')}
+                  className="cursor-pointer"
+                >
+                  <UserIcon className="w-4 h-4 mr-2" />
+                  Ver Perfil
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Cerrar Sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarFooter>
         </Sidebar>
 
-        <main className="flex-1 flex flex-col">
-          <header className="bg-white/90 backdrop-blur-sm border-b border-slate-200/60 px-6 py-4 md:px-8 h-24 flex items-center">
+        <main className="flex-1 flex flex-col h-full overflow-hidden">
+          {/* <header className="bg-white/90 backdrop-blur-sm border-b border-slate-200/60 px-6 py-4 md:px-8 h-24 flex items-center flex-shrink-0">
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="md:hidden hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200" />
                 <div>
                   <h1 className="text-2xl font-bold text-slate-900">{currentPageName}</h1>
-                  <p className="text-sm text-slate-500 mt-1">
-                    {selectedCity ? `Ciudad activa: ${selectedCity.name}` : "Sistema de gestión de eventos"}
-                  </p>
                 </div>
               </div>
               
@@ -338,7 +370,7 @@ function MainLayout({ children, currentPageName }) {
                 <CitySelector inHeader={true} />
               </div>
             </div>
-          </header>
+          </header> */}
 
           <div className="flex-1 overflow-auto">
             <div className="max-w-7xl mx-auto p-6 md:p-8">

@@ -23,7 +23,7 @@ export default function VenuesPage() {
     setIsLoading(true);
     try {
       const [venuesData, citiesData] = await Promise.all([
-        Venue.list("-created_date"),
+        Venue.list("-created_at"),
         City.list()
       ]);
       setVenues(venuesData);

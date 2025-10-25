@@ -230,6 +230,56 @@ User deletion is handled through a Supabase Edge Function to ensure complete rem
 - Always use `User.deleteComplete(id)` for complete user removal
 - Deletion removes user from both authentication and profile tables
 
+### User Password Reset System
+
+Admin and Supplier users can reset passwords for users they manage through two methods:
+
+**Components:**
+- Edge Function: `supabase/functions/reset-user-password/` - Handles password reset operations
+- `User.resetPassword(userId, newPassword)` - Sets a specific password for a user
+- `User.sendPasswordResetEmail(userId)` - Sends password recovery email to user
+- `UserCreateForm.tsx` - Includes password reset UI in edit mode
+
+**Reset Methods:**
+
+1. **Manual Password Reset** - Admin/Supplier sets a specific password:
+   - Minimum 6 characters required
+   - Password is set immediately
+   - User can use the new password to log in right away
+   - Accessible via "Establecer Nueva Contraseña" button in user edit form
+
+2. **Email Recovery Link** - Sends Supabase password reset email:
+   - Uses Supabase's built-in password recovery system
+   - User receives email with secure recovery link
+   - User clicks link and sets their own password
+   - Accessible via "Enviar Email de Recuperación" button in user edit form
+
+**Reset Flow:**
+1. Admin or Supplier opens user edit form in [Users.tsx](src/Pages/Users.tsx)
+2. In edit mode, password reset section appears with two options
+3. For manual reset:
+   - Click "Establecer Nueva Contraseña"
+   - Enter new password (min 6 characters) in modal
+   - Password is validated and set via Edge Function
+4. For email reset:
+   - Click "Enviar Email de Recuperación"
+   - Confirm sending email to user
+   - Supabase sends password recovery email with secure link
+   - User follows link to set new password
+
+**Permissions:**
+- Only Admin and Supplier roles can reset passwords
+- Supplier can only reset passwords for users in their assigned cities
+- Admin can reset passwords for any user
+- Edge Function validates permissions and city assignments
+
+**Security:**
+- Password reset requires valid JWT token
+- Edge Function validates requester has permission to manage the target user
+- Supplier permissions verified against shared cities
+- Recovery emails use Supabase's secure token system
+- Manual passwords must meet minimum length requirement
+
 ## Email Notifications (EmailJS Integration)
 
 ### User Creation Email Flow

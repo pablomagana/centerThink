@@ -4,7 +4,7 @@ import { Speaker } from "@/entities/Speaker";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import SpeakersList from "../components/speakers/SpeakersList";
-import SpeakerForm from "../components/speakers/SpeakerForm";
+import SpeakerForm from "../components/speakers/SpeakersForm";
 
 export default function SpeakersPage() {
   const [speakers, setSpeakers] = useState([]);
@@ -19,7 +19,7 @@ export default function SpeakersPage() {
   const loadSpeakers = async () => {
     setIsLoading(true);
     try {
-      const data = await Speaker.list("-created_date");
+      const data = await Speaker.list("-created_at");
       setSpeakers(data);
     } catch (error) {
       console.error("Error loading speakers:", error);
@@ -81,8 +81,11 @@ export default function SpeakersPage() {
             Base de datos completa de todos tus ponentes y su información de contacto
           </p>
         </div>
-        <Button 
-          onClick={() => setShowForm(!showForm)}
+        <Button
+          onClick={() => {
+            setEditingSpeaker(null);
+            setShowForm(true);
+          }}
           className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg h-12 px-8 text-base"
         >
           <Plus className="w-5 h-5 mr-2" />

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { City } from "@/entities/City";
+import { Event } from "@/entities/Event";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import CitiesList from "../components/cities/CityList";
 import CityForm from "../components/cities/CityForm";
 
@@ -10,6 +12,7 @@ export default function CitiesPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingCity, setEditingCity] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     loadCities();
@@ -18,7 +21,7 @@ export default function CitiesPage() {
   const loadCities = async () => {
     setIsLoading(true);
     try {
-      const data = await City.list("-created_date");
+      const data = await City.list("-created_at");
       setCities(data);
     } catch (error) {
       console.error("Error loading cities:", error);
@@ -49,6 +52,30 @@ export default function CitiesPage() {
   const handleCancel = () => {
     setShowForm(false);
     setEditingCity(null);
+  };
+
+  const handleDelete = async (cityId) => {
+    try {
+      setErrorMessage(null);
+
+      // Verificar si la ciudad tiene eventos asociados
+      const allEvents = await Event.list();
+      const cityEvents = allEvents.filter(event => event.city_id === cityId);
+
+      if (cityEvents.length > 0) {
+        setErrorMessage(
+          `No se puede eliminar la ciudad porque tiene ${cityEvents.length} evento(s) asociado(s). Elimina o reasigna los eventos primero.`
+        );
+        return;
+      }
+
+      // Si no hay eventos, proceder con la eliminación
+      await City.delete(cityId);
+      loadCities();
+    } catch (error) {
+      console.error("Error deleting city:", error);
+      setErrorMessage("Error al eliminar la ciudad. Por favor intenta de nuevo.");
+    }
   };
 
   if (isLoading) {
@@ -85,9 +112,17 @@ export default function CitiesPage() {
         />
       )}
 
+      {errorMessage && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      )}
+
       <CitiesList
         cities={cities}
         onEdit={handleEdit}
+        onDelete={handleDelete}
       />
     </div>
   );

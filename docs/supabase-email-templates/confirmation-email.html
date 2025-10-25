@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirma tu cuenta - centerThink</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6; line-height: 1.6;">
+    <!-- Container Principal -->
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f3f4f6; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <!-- Card Principal -->
+                <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
+
+                    <!-- Header con Gradiente -->
+                    <tr>
+                        <td style="padding: 0;">
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); padding: 48px 40px; text-align: center;">
+                                <tr>
+                                    <td>
+                                        <!-- Logo/Icon -->
+                                        <div style="background-color: rgba(255, 255, 255, 0.2); border-radius: 50%; width: 80px; height: 80px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 80px; height: 80px; background-color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: bold; letter-spacing: -0.5px;">
+                                            centerThink
+                                        </h1>
+                                        <p style="margin: 12px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 500;">
+                                            Gestión de Thinkglaos
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Contenido Principal -->
+                    <tr>
+                        <td style="padding: 48px 40px;">
+                            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td>
+                                        <h2 style="margin: 0 0 24px 0; color: #1f2937; font-size: 28px; font-weight: bold; text-align: center;">
+                                            ¡Bienvenido/a a centerThink! 🎉
+                                        </h2>
+
+                                        <p style="margin: 0 0 24px 0; color: #4b5563; font-size: 16px; line-height: 1.8; text-align: center;">
+                                            Estamos emocionados de tenerte con nosotros. Para comenzar a usar tu cuenta y acceder a todas las funcionalidades de la plataforma, necesitamos que confirmes tu dirección de correo electrónico.
+                                        </p>
+
+                                        <p style="margin: 0 0 32px 0; color: #6b7280; font-size: 15px; line-height: 1.6; text-align: center;">
+                                            Haz clic en el botón de abajo para activar tu cuenta:
+                                        </p>
+
+                                        <!-- Botón CTA -->
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 0 0 32px 0;">
+                                            <tr>
+                                                <td align="center">
+                                                    <a href="{{ .ConfirmationURL }}"
+                                                       style="display: inline-block; padding: 18px 48px; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 17px; font-weight: 600; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: transform 0.2s;">
+                                                        ✓ Confirmar mi cuenta
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Separador -->
+                                        <div style="height: 1px; background: linear-gradient(to right, transparent, #e5e7eb, transparent); margin: 32px 0;"></div>
+
+                                        <!-- Información Adicional -->
+                                        <div style="background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 100%); border-left: 4px solid #3b82f6; border-radius: 8px; padding: 24px; margin: 0 0 24px 0;">
+                                            <p style="margin: 0 0 8px 0; color: #1e40af; font-size: 15px; font-weight: 600;">
+                                                ℹ️ ¿No funciona el botón?
+                                            </p>
+                                            <p style="margin: 0 0 12px 0; color: #475569; font-size: 14px; line-height: 1.6;">
+                                                Si el botón no funciona, copia y pega este enlace en tu navegador:
+                                            </p>
+                                            <p style="margin: 0; word-break: break-all; background-color: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e5e7eb;">
+                                                <a href="{{ .ConfirmationURL }}"
+                                                   style="color: #3b82f6; font-size: 13px; text-decoration: none; font-family: 'Courier New', monospace;">
+                                                    {{ .ConfirmationURL }}
+                                                </a>
+                                            </p>
+                                        </div>
+
+                                        <!-- Aviso de Seguridad -->
+                                        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%); border-left: 4px solid #f59e0b; border-radius: 8px; padding: 20px; margin: 0;">
+                                            <p style="margin: 0; color: #92400e; font-size: 14px; line-height: 1.7;">
+                                                <strong>⚠️ Importante:</strong> Este enlace de confirmación expirará en <strong>24 horas</strong>. Si no solicitaste esta cuenta, puedes ignorar este correo de forma segura.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Sección de Beneficios -->
+                    <tr>
+                        <td style="padding: 0 40px 40px 40px;">
+                            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td>
+                                        <h3 style="margin: 0 0 20px 0; color: #1f2937; font-size: 18px; font-weight: 600; text-align: center;">
+                                            ¿Qué podrás hacer con tu cuenta?
+                                        </h3>
+
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                            <tr>
+                                                <td style="padding: 12px 0; vertical-align: top; width: 40px;">
+                                                    <span style="display: inline-block; width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #10b981); border-radius: 50%; text-align: center; line-height: 32px; color: white; font-size: 16px;">📅</span>
+                                                </td>
+                                                <td style="padding: 12px 0 12px 12px;">
+                                                    <p style="margin: 0; color: #374151; font-size: 15px; line-height: 1.5;">
+                                                        <strong style="color: #1f2937;">Gestionar eventos</strong> - Organiza y coordina Thinkglaos en tu ciudad
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 12px 0; vertical-align: top;">
+                                                    <span style="display: inline-block; width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #10b981); border-radius: 50%; text-align: center; line-height: 32px; color: white; font-size: 16px;">🎤</span>
+                                                </td>
+                                                <td style="padding: 12px 0 12px 12px;">
+                                                    <p style="margin: 0; color: #374151; font-size: 15px; line-height: 1.5;">
+                                                        <strong style="color: #1f2937;">Conectar con ponentes</strong> - Base de datos de speakers y seguimiento
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 12px 0; vertical-align: top;">
+                                                    <span style="display: inline-block; width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #10b981); border-radius: 50%; text-align: center; line-height: 32px; color: white; font-size: 16px;">📍</span>
+                                                </td>
+                                                <td style="padding: 12px 0 12px 12px;">
+                                                    <p style="margin: 0; color: #374151; font-size: 15px; line-height: 1.5;">
+                                                        <strong style="color: #1f2937;">Gestionar locales</strong> - Control de venues y espacios disponibles
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 12px 0; vertical-align: top;">
+                                                    <span style="display: inline-block; width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #10b981); border-radius: 50%; text-align: center; line-height: 32px; color: white; font-size: 16px;">✅</span>
+                                                </td>
+                                                <td style="padding: 12px 0 12px 12px;">
+                                                    <p style="margin: 0; color: #374151; font-size: 15px; line-height: 1.5;">
+                                                        <strong style="color: #1f2937;">Seguimiento de tareas</strong> - Organiza y prioriza todas tus actividades
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 32px 40px; background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); border-top: 1px solid #e5e7eb;">
+                            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <p style="margin: 0 0 16px 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+                                            Una vez confirmada tu cuenta, podrás iniciar sesión en:
+                                        </p>
+                                        <p style="margin: 0 0 24px 0;">
+                                            <a href="{{ .SiteURL }}"
+                                               style="color: #3b82f6; font-size: 15px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                                                <span>{{ .SiteURL }}</span>
+                                                <span style="font-size: 18px;">→</span>
+                                            </a>
+                                        </p>
+
+                                        <div style="height: 1px; background-color: #e5e7eb; margin: 24px 0;"></div>
+
+                                        <p style="margin: 0 0 12px 0; color: #9ca3af; font-size: 13px; line-height: 1.6;">
+                                            ¿Necesitas ayuda? Nuestro equipo está aquí para ti
+                                        </p>
+                                        <p style="margin: 0 0 20px 0;">
+                                            <a href="mailto:info@pablomagana.es"
+                                               style="color: #3b82f6; font-size: 13px; text-decoration: none; font-weight: 500;">
+                                                📧 Contactar soporte
+                                            </a>
+                                        </p>
+
+                                        <p style="margin: 0; color: #9ca3af; font-size: 12px; line-height: 1.5;">
+                                            © 2024 centerThink. Todos los derechos reservados.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <!-- Texto de Seguridad Inferior -->
+                <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; margin-top: 24px;">
+                    <tr>
+                        <td style="text-align: center; padding: 0 20px;">
+                            <p style="margin: 0; color: #9ca3af; font-size: 12px; line-height: 1.6;">
+                                Si no creaste una cuenta en centerThink, puedes ignorar este mensaje de forma segura. Tu dirección de correo no será utilizada sin tu confirmación.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

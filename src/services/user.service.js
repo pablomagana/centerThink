@@ -148,5 +148,106 @@ export const userService = {
     }
 
     return data
+  },
+
+  /**
+   * Resetea la contraseña de un usuario estableciendo una contraseña específica
+   * Solo admin y supplier pueden usar esta función
+   * @param {string} userId - ID del usuario
+   * @param {string} newPassword - Nueva contraseña (mínimo 6 caracteres)
+   * @returns {Promise<{success: boolean, message: string, method: string}>}
+   */
+  async resetPassword(userId, newPassword) {
+    const { data, error } = await supabase.functions.invoke('reset-user-password', {
+      body: { userId, newPassword, sendEmail: false },
+      method: 'POST'
+    })
+
+    if (error) {
+      console.error('Error calling reset-user-password function:', error)
+      throw new Error(error.message || 'Error al resetear la contraseña')
+    }
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
+  },
+
+  /**
+   * Envía un email de recuperación de contraseña al usuario
+   * Solo admin y supplier pueden usar esta función
+   * @param {string} userId - ID del usuario
+   * @returns {Promise<{success: boolean, message: string, method: string}>}
+   */
+  async sendPasswordResetEmail(userId) {
+    const { data, error } = await supabase.functions.invoke('reset-user-password', {
+      body: { userId, sendEmail: true },
+      method: 'POST'
+    })
+
+    if (error) {
+      console.error('Error calling reset-user-password function:', error)
+      throw new Error(error.message || 'Error al enviar email de recuperación')
+    }
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
+  },
+
+  /**
+   * Obtiene la lista de ciudades disponibles para registro público
+   * No requiere autenticación
+   * @returns {Promise<Array<{id: string, name: string}>>}
+   */
+  async getPublicCities() {
+    const { data, error } = await supabase.functions.invoke('register-user', {
+      method: 'GET'
+    })
+
+    if (error) {
+      console.error('Error calling register-user function (GET cities):', error)
+      throw new Error(error.message || 'Error al obtener las ciudades')
+    }
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data.cities || []
+  },
+
+  /**
+   * Registra un nuevo usuario públicamente (auto-registro)
+   * No requiere autenticación. Crea usuario con rol 'user' por defecto
+   * @param {Object} userData - Datos del usuario
+   * @param {string} userData.email - Email del usuario
+   * @param {string} userData.password - Contraseña (min 8 caracteres, 1 mayúscula, 1 minúscula, 1 número)
+   * @param {string} userData.first_name - Nombre
+   * @param {string} userData.last_name - Apellidos
+   * @param {string} userData.city_id - ID de la ciudad seleccionada
+   * @param {string} [userData.phone] - Teléfono (opcional)
+   * @returns {Promise<{success: boolean, user: Object, message: string}>}
+   */
+  async register(userData) {
+    const { data, error } = await supabase.functions.invoke('register-user', {
+      body: userData,
+      method: 'POST'
+    })
+
+    if (error) {
+      console.error('Error calling register-user function:', error)
+      throw new Error(error.message || 'Error al registrar el usuario')
+    }
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
   }
 }

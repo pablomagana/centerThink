@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirma tu cuenta - centerThink</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f3f4f6;">
+        <tr>
+            <td align="center" style="padding: 40px 0;">
+                <table role="presentation" style="width: 600px; max-width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 40px 40px 20px 40px; text-align: center; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); border-radius: 8px 8px 0 0;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">centerThink</h1>
+                            <p style="margin: 10px 0 0 0; color: #f0f9ff; font-size: 14px;">Gestión de Thinkglaos</p>
+                        </td>
+                    </tr>
+
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <h2 style="margin: 0 0 20px 0; color: #1f2937; font-size: 24px; font-weight: bold;">¡Bienvenido/a, {{user_name}}!</h2>
+
+                            <p style="margin: 0 0 20px 0; color: #4b5563; font-size: 16px; line-height: 1.6;">
+                                Gracias por registrarte en <strong>centerThink</strong>. Estamos emocionados de tenerte con nosotros.
+                            </p>
+
+                            <p style="margin: 0 0 30px 0; color: #4b5563; font-size: 16px; line-height: 1.6;">
+                                Para completar tu registro y activar tu cuenta, por favor confirma tu dirección de correo electrónico haciendo clic en el siguiente botón:
+                            </p>
+
+                            <!-- CTA Button -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td align="center" style="padding: 20px 0;">
+                                        <a href="{{confirmation_link}}"
+                                           style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                            Confirmar mi cuenta
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Alternative Link -->
+                            <div style="margin: 30px 0; padding: 20px; background-color: #f9fafb; border-radius: 6px; border-left: 4px solid #3b82f6;">
+                                <p style="margin: 0 0 10px 0; color: #4b5563; font-size: 14px; font-weight: bold;">
+                                    ¿No funciona el botón?
+                                </p>
+                                <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px; line-height: 1.5;">
+                                    Copia y pega este enlace en tu navegador:
+                                </p>
+                                <p style="margin: 0; word-break: break-all;">
+                                    <a href="{{confirmation_link}}" style="color: #3b82f6; font-size: 13px; text-decoration: none;">
+                                        {{confirmation_link}}
+                                    </a>
+                                </p>
+                            </div>
+
+                            <!-- Important Notice -->
+                            <div style="margin: 30px 0 0 0; padding: 16px; background-color: #fef3c7; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                                <p style="margin: 0; color: #92400e; font-size: 14px; line-height: 1.5;">
+                                    <strong>⚠️ Importante:</strong> Este enlace expirará en 24 horas. Si no confirmaste tu cuenta, por favor contacta con nuestro soporte.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 30px 40px; background-color: #f9fafb; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb;">
+                            <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px; line-height: 1.5;">
+                                Una vez confirmada tu cuenta, podrás iniciar sesión en:
+                            </p>
+                            <p style="margin: 0 0 20px 0;">
+                                <a href="{{app_url}}" style="color: #3b82f6; font-size: 14px; text-decoration: none; font-weight: 500;">
+                                    {{app_url}}
+                                </a>
+                            </p>
+
+                            <p style="margin: 0; color: #9ca3af; font-size: 12px; line-height: 1.5;">
+                                Si no te registraste en centerThink, puedes ignorar este email de forma segura.
+                            </p>
+
+                            <hr style="margin: 20px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+                            <p style="margin: 0; color: #9ca3af; font-size: 12px; text-align: center;">
+                                © 2024 centerThink. Todos los derechos reservados.<br>
+                                ¿Necesitas ayuda? <a href="mailto:info@pablomagana.es" style="color: #3b82f6; text-decoration: none;">Contacta soporte</a>
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
