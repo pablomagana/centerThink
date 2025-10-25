@@ -201,6 +201,86 @@ User creation is handled through a Supabase Edge Function to ensure secure authe
 - Automatic rollback if profile creation fails
 - Secure password generation (16 characters, mixed case, numbers, symbols)
 
+### User Deletion System
+
+User deletion is handled through a Supabase Edge Function to ensure complete removal from both authentication and profile tables:
+
+**Components:**
+- Edge Function: `supabase/functions/delete-user/` - Deletes user from both auth.users and user_profiles
+- `User.deleteComplete(userId)` - Client method that invokes the Edge Function
+
+**Deletion Flow:**
+1. Admin or Supplier initiates user deletion
+2. Frontend calls `User.deleteComplete(userId)` in [Users.tsx:141](src/Pages/Users.tsx#L141)
+3. Edge Function validates permissions:
+   - Admin can delete any user (except themselves)
+   - Supplier can delete users (except themselves)
+   - User role cannot delete users
+4. Edge Function deletes from `user_profiles` first
+5. Edge Function deletes from `auth.users`
+6. Returns success or error with details
+
+**Permissions:**
+- Only Admin and Supplier roles can delete users
+- Users cannot delete their own account (safety measure)
+- Deletion is permanent and cannot be undone
+
+**Important:**
+- The old `User.delete(id)` method only deletes from `user_profiles` (kept for compatibility)
+- Always use `User.deleteComplete(id)` for complete user removal
+- Deletion removes user from both authentication and profile tables
+
+## Email Notifications (EmailJS Integration)
+
+### User Creation Email Flow
+When a new user is created, the system automatically sends an email with login credentials using EmailJS.
+
+**Configuration:**
+1. Create EmailJS account at [emailjs.com](https://www.emailjs.com/)
+2. Set up email service (Gmail, Outlook, SendGrid, etc.)
+3. Create email template with required variables:
+   - `{{to_email}}` - Recipient email address
+   - `{{user_name}}` - Full name of new user
+   - `{{temp_password}}` - Auto-generated temporary password
+   - `{{login_url}}` - Application URL for login
+   - `{{creator_name}}` - Admin/Supplier who created the account
+4. Configure environment variables in `.env`:
+   ```env
+   VITE_EMAILJS_SERVICE_ID=your_service_id
+   VITE_EMAILJS_TEMPLATE_ID=your_template_id
+   VITE_EMAILJS_PUBLIC_KEY=your_public_key
+   VITE_APP_URL=http://localhost:3000
+   ```
+
+**Components:**
+- `emailService` (`src/services/email.service.js`) - EmailJS integration service
+- `emailService.sendUserCredentials()` - Sends credentials email to new user
+- `emailService.init()` - Initializes EmailJS (called in `main.jsx`)
+
+**Flow:**
+1. Admin/Supplier creates user via UserCreateForm in [Users.tsx:44-99](src/Pages/Users.tsx#L44-L99)
+2. Edge Function creates user and generates temporary password
+3. Frontend receives temp password in response
+4. Frontend calls `emailService.sendUserCredentials()` to send email
+5. On success: User receives email with credentials and login link
+6. On failure: Alert displays password for manual communication (fallback)
+
+**Security:**
+- Temp password only transmitted via HTTPS
+- Email sent directly from browser using EmailJS client SDK
+- Fallback to manual communication if email fails
+- No password stored in logs or databases (except encrypted in Supabase Auth)
+- EmailJS Public Key is safe to expose (designed for client-side use)
+
+**Error Handling:**
+- If EmailJS is not configured, error thrown with clear message
+- If email send fails, user creation still succeeds (rollback not performed)
+- Admin receives alert with password for manual delivery as fallback
+- All email errors logged to console for debugging
+
+**Template Example:**
+See `docs/email-template.html` for reference HTML template with proper styling and structure.
+
 ## Key Conventions
 
 1. **City Filtering**: Most data views should respect the `selectedCity` from AppContext

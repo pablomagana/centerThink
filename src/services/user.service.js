@@ -70,6 +70,30 @@ export const userService = {
     if (error) throw error
   },
 
+  /**
+   * Elimina un usuario completo usando la Edge Function
+   * Esto elimina el usuario de auth.users Y de user_profiles
+   * @param {string} userId - ID del usuario a eliminar
+   * @returns {Promise<{success: boolean, message: string}>}
+   */
+  async deleteComplete(userId) {
+    const { data, error } = await supabase.functions.invoke('delete-user', {
+      body: { userId },
+      method: 'POST'
+    })
+
+    if (error) {
+      console.error('Error calling delete-user function:', error)
+      throw new Error(error.message || 'Error al eliminar el usuario')
+    }
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
+  },
+
   // Método especial para obtener el perfil del usuario actual
   async me() {
     const { data: { user }, error: authError } = await supabase.auth.getUser()

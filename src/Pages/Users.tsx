@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { User } from "@/entities/user";
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 import UsersList from "../components/users/UsersList";
@@ -9,7 +10,18 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { emailService } from "@/services/email.service";
 
 export default function UsersPage() {
   const { profile } = useAuth();
@@ -20,6 +32,8 @@ export default function UsersPage() {
   const [showDialog, setShowDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -29,7 +43,7 @@ export default function UsersPage() {
     setIsLoading(true);
     try {
       const [usersData, citiesData] = await Promise.all([
-        base44.entities.User.list(),
+        User.list(),
         base44.entities.City.list(),
       ]);
       setUsers(usersData);
@@ -49,25 +63,45 @@ export default function UsersPage() {
         // Modo edición: solo actualizar campos permitidos
         const { first_name, last_name, phone, cities, role } = userData;
         const updateData = { first_name, last_name, phone, cities, role };
-        await base44.entities.User.update(editingUser.id, updateData);
+        await User.update(editingUser.id, updateData);
 
         setShowDialog(false);
         setEditingUser(null);
         await loadData();
       } else {
         // Modo creación: llamar a Edge Function
-        const result = await base44.entities.User.createComplete(userData);
+        const result = await User.createComplete(userData);
+
+        // Intentar enviar email con credenciales
+        try {
+          await emailService.sendUserCredentials({
+            toEmail: userData.email,
+            userName: `${userData.first_name} ${userData.last_name}`,
+            tempPassword: result.tempPassword,
+            creatorName: `${profile.first_name} ${profile.last_name}`
+          });
+
+          // Éxito: email enviado
+          alert(
+            `Usuario creado exitosamente!\n\n` +
+            `Se ha enviado un email a ${userData.email} con las credenciales de acceso.`
+          );
+
+        } catch (emailError) {
+          // Usuario creado pero email falló - mostrar contraseña manualmente
+          console.error("Error enviando email:", emailError);
+
+          alert(
+            `Usuario creado exitosamente, pero no se pudo enviar el email automático.\n\n` +
+            `Por favor, comunica estas credenciales manualmente:\n\n` +
+            `Email: ${userData.email}\n` +
+            `Contraseña temporal: ${result.tempPassword}\n\n` +
+            `El usuario debe cambiar su contraseña después del primer inicio de sesión.`
+          );
+        }
 
         setShowDialog(false);
         await loadData();
-
-        // Mostrar la contraseña temporal al administrador
-        alert(
-          `Usuario creado exitosamente!\n\n` +
-          `Email: ${userData.email}\n` +
-          `Contraseña temporal: ${result.tempPassword}\n\n` +
-          `Por favor, comunica estas credenciales al usuario de forma segura.`
-        );
       }
     } catch (error) {
       console.error("Error saving user:", error);
@@ -93,6 +127,32 @@ export default function UsersPage() {
     setShowDialog(false);
     setEditingUser(null);
     setFormError(null);
+  };
+
+  const handleDelete = (user) => {
+    setUserToDelete(user);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
+
+    try {
+      // Usar deleteComplete para eliminar tanto de auth.users como de user_profiles
+      await User.deleteComplete(userToDelete.id);
+      setShowDeleteDialog(false);
+      setUserToDelete(null);
+      await loadData();
+      alert("Usuario eliminado exitosamente de auth y perfiles");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert(`Error al eliminar el usuario: ${error.message}\nPor favor, intenta de nuevo.`);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteDialog(false);
+    setUserToDelete(null);
   };
 
   if (isLoading) {
@@ -126,6 +186,7 @@ export default function UsersPage() {
         users={users}
         cities={cities}
         onEdit={handleEdit}
+        onDelete={handleDelete}
       />
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -142,6 +203,30 @@ export default function UsersPage() {
           />
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar usuario?</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Estás seguro de que deseas eliminar al usuario{" "}
+              <strong>
+                {userToDelete?.first_name} {userToDelete?.last_name}
+              </strong>
+              ? Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelDelete}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

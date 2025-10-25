@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a CenterThink</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+
+          <!-- Header con gradiente -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #2563eb 0%, #10b981 100%); padding: 40px 30px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
+                🎯 Bienvenido a CenterThink
+              </h1>
+              <p style="margin: 10px 0 0 0; color: #ffffff; font-size: 16px; opacity: 0.95;">
+                Tu cuenta ha sido creada exitosamente
+              </p>
+            </td>
+          </tr>
+
+          <!-- Contenido principal -->
+          <tr>
+            <td style="padding: 40px 30px;">
+
+              <!-- Saludo -->
+              <p style="font-size: 18px; color: #1e293b; margin: 0 0 20px 0;">
+                Hola <strong>{{user_name}}</strong>,
+              </p>
+
+              <!-- Texto introductorio -->
+              <p style="font-size: 16px; color: #475569; line-height: 1.7; margin: 0 0 30px 0;">
+                <strong>{{creator_name}}</strong> ha creado una cuenta para ti en <strong>CenterThink</strong>,
+                nuestra plataforma de gestión de eventos Thinkglao. Ya puedes acceder al sistema con tus credenciales.
+              </p>
+
+              <!-- Caja de credenciales -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border-left: 4px solid #2563eb; border-radius: 8px; margin: 30px 0;">
+                <tr>
+                  <td style="padding: 25px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #1e293b;">
+                      🔐 Tus credenciales de acceso:
+                    </h3>
+
+                    <!-- Email -->
+                    <div style="margin: 12px 0;">
+                      <span style="font-weight: 600; color: #475569; display: inline-block; min-width: 180px; font-size: 15px;">
+                        Email:
+                      </span>
+                      <span style="font-family: 'Courier New', monospace; background-color: #ffffff; padding: 6px 12px; border-radius: 4px; border: 1px solid #e2e8f0; display: inline-block; font-size: 14px; color: #0f172a;">
+                        {{to_email}}
+                      </span>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div style="margin: 12px 0;">
+                      <span style="font-weight: 600; color: #475569; display: inline-block; min-width: 180px; font-size: 15px;">
+                        Contraseña temporal:
+                      </span>
+                      <span style="font-family: 'Courier New', monospace; background-color: #ffffff; padding: 6px 12px; border-radius: 4px; border: 1px solid #e2e8f0; display: inline-block; font-size: 14px; color: #0f172a;">
+                        {{temp_password}}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Caja de advertencia -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; margin: 25px 0;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <strong style="display: block; margin-bottom: 8px; color: #92400e; font-size: 16px;">
+                      ⚠️ Importante - Seguridad de tu cuenta
+                    </strong>
+                    <p style="margin: 0; color: #78350f; font-size: 14px; line-height: 1.6;">
+                      Esta contraseña es temporal. Por tu seguridad, te recomendamos cambiarla
+                      después del primer inicio de sesión. Puedes hacerlo desde tu perfil haciendo
+                      clic en tu email en la barra lateral de la aplicación.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Botón CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0 20px 0;">
+                <tr>
+                  <td align="center">
+                    <a href="{{login_url}}" style="display: inline-block; padding: 14px 40px; background: linear-gradient(135deg, #2563eb 0%, #10b981 100%); color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);">
+                      Iniciar Sesión en CenterThink →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Texto de ayuda -->
+              <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid #e2e8f0;">
+                <p style="color: #64748b; font-size: 14px; line-height: 1.7; margin: 0 0 10px 0;">
+                  <strong>¿Necesitas ayuda?</strong><br>
+                  Si tienes alguna pregunta o problema para acceder a tu cuenta, no dudes en
+                  contactar con el equipo de administración que te creó la cuenta.
+                </p>
+              </div>
+
+              <!-- Firma -->
+              <div style="margin-top: 25px;">
+                <p style="color: #475569; font-size: 15px; margin: 0;">
+                  Saludos cordiales,<br>
+                  <strong>El equipo de CenterThink</strong>
+                </p>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8fafc; padding: 25px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
+              <p style="margin: 8px 0; font-size: 13px; color: #64748b;">
+                <strong>CenterThink</strong> - Gestión de eventos Thinkglao
+              </p>
+              <p style="margin: 8px 0; font-size: 13px; color: #64748b;">
+                Este es un email automático, por favor no respondas a este mensaje.
+              </p>
+              <p style="margin: 15px 0 8px 0; font-size: 12px; color: #94a3b8;">
+                © 2025 CenterThink. Todos los derechos reservados.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

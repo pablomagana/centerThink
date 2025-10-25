@@ -9,10 +9,11 @@ import {
   Edit2,
   MapPin,
   Shield,
+  Trash2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function UsersList({ users, cities, onEdit }) {
+export default function UsersList({ users, cities, onEdit, onDelete }) {
   const getUserCities = (userCityIds) => {
     if (!userCityIds || userCityIds.length === 0) return [];
     return cities.filter(city => userCityIds.includes(city.id));
@@ -69,14 +70,25 @@ export default function UsersList({ users, cities, onEdit }) {
                       </Badge>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onEdit(user)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </Button>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onEdit(user)}
+                      title="Editar usuario"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(user)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      title="Eliminar usuario"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
 

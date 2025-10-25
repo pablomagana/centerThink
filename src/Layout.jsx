@@ -98,7 +98,7 @@ function MainLayout({ children, currentPageName }) {
     appIsLoading
   } = useContext(AppContext);
 
-  const [debugExpanded, setDebugExpanded] = useState(true);
+  const [debugExpanded, setDebugExpanded] = useState(false);
 
   console.log('=== LAYOUT DEBUG ===');
   console.log('currentUser:', currentUser);

@@ -1,0 +1,48 @@
+===================================
+PLANTILLA SIMPLE PARA EMAILJS
+===================================
+
+CONFIGURACIÓN DE LA PLANTILLA:
+-------------------------------
+To Email: {{to_email}}
+From Name: CenterThink
+Subject: Bienvenido a CenterThink - Tus Credenciales
+
+CONTENIDO (Text/HTML):
+-------------------------------
+
+Bienvenido a CenterThink
+
+Hola {{user_name}},
+
+{{creator_name}} ha creado una cuenta para ti en CenterThink, nuestra plataforma de gestión de eventos Thinkglao.
+
+🔐 TUS CREDENCIALES DE ACCESO:
+
+Email: {{to_email}}
+Contraseña temporal: {{temp_password}}
+
+🌐 ACCEDER A LA PLATAFORMA:
+{{login_url}}
+
+⚠️ IMPORTANTE - SEGURIDAD:
+Esta contraseña es temporal. Por tu seguridad, te recomendamos cambiarla después del primer inicio de sesión. Puedes hacerlo desde tu perfil haciendo clic en tu email en la barra lateral.
+
+¿Necesitas ayuda?
+Si tienes alguna pregunta o problema para acceder a tu cuenta, contacta con el equipo de administración.
+
+Saludos cordiales,
+El equipo de CenterThink
+
+---
+CenterThink - Gestión de eventos Thinkglao
+Este es un email automático, por favor no respondas a este mensaje.
+
+===================================
+VARIABLES UTILIZADAS:
+===================================
+{{to_email}} - Email del destinatario
+{{user_name}} - Nombre completo del usuario
+{{temp_password}} - Contraseña temporal
+{{login_url}} - URL de la aplicación
+{{creator_name}} - Nombre del admin que creó la cuenta

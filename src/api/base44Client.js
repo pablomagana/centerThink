@@ -197,6 +197,41 @@ class UserEntity extends Base44Entity {
       throw error;
     }
   }
+
+  async deleteComplete(userId) {
+    try {
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+
+      // Importar cliente de supabase para obtener el token del usuario actual
+      const { supabase } = await import('../lib/supabase.js');
+
+      // Obtener la sesión actual
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        throw new Error('No active session. Please login first.');
+      }
+
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/delete-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete user');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting complete user:', error);
+      throw error;
+    }
+  }
 }
 
 class Base44Client {
