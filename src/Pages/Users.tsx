@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { User } from "@/entities/user.js";
+import { User } from "@/entities/User.js";
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 import UsersList from "../components/users/UsersList";
