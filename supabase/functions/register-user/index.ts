@@ -2,8 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 interface RegisterUserRequest {
-  email: string;
-  password: string;
+  userId: string;
   first_name: string;
   last_name: string;
   city_id: string;
@@ -69,44 +68,13 @@ serve(async (req) => {
 
   try {
     const requestData: RegisterUserRequest = await req.json()
-    const { email, password, first_name, last_name, city_id, phone } = requestData
+    const { userId, first_name, last_name, city_id, phone } = requestData
 
     // Validar campos requeridos
-    if (!email || !password || !first_name || !last_name || !city_id) {
+    if (!userId || !first_name || !last_name || !city_id) {
       return new Response(
         JSON.stringify({
-          error: 'Faltan campos requeridos: email, password, first_name, last_name, city_id'
-        }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      )
-    }
-
-    // Validar email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return new Response(
-        JSON.stringify({ error: 'Formato de email inválido' }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      )
-    }
-
-    // Validar longitud de contraseña
-    if (password.length < 8) {
-      return new Response(
-        JSON.stringify({ error: 'La contraseña debe tener al menos 8 caracteres' }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      )
-    }
-
-    // Validar complejidad de contraseña
-    const hasUpperCase = /[A-Z]/.test(password)
-    const hasLowerCase = /[a-z]/.test(password)
-    const hasNumber = /[0-9]/.test(password)
-
-    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
-      return new Response(
-        JSON.stringify({
-          error: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número'
+          error: 'Faltan campos requeridos: userId, first_name, last_name, city_id'
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       )
@@ -126,43 +94,7 @@ serve(async (req) => {
       )
     }
 
-    // 1. Generar link de confirmación (esto crea el usuario + envía email)
-    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'signup',
-      email,
-      password, // ¡Importante! Incluir password aquí
-      options: {
-        redirectTo: `${Deno.env.get('APP_URL') || 'http://localhost:3000'}/login`,
-        data: { // Esto va a user_metadata
-          first_name,
-          last_name
-        }
-      }
-    });
-
-    if (linkError) {
-      console.error('Error generating signup link:', linkError);
-      let errorMessage = 'Error al registrar el usuario';
-      if (linkError.message.includes('already registered')) {
-        errorMessage = 'Este email ya está registrado';
-      }
-      return new Response(JSON.stringify({ error: errorMessage }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      });
-    }
-
-    if (!linkData?.user) {
-      return new Response(JSON.stringify({ error: 'No se pudo crear el usuario' }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      });
-    }
-
-    // 2. El usuario ya fue creado por generateLink → usar su ID
-    const userId = linkData.user.id;
-
-    // 3. Crear perfil
+    // Crear perfil del usuario (el usuario ya fue creado en auth.users desde el cliente)
     const { data: profileData, error: profileCreateError } = await supabaseAdmin
       .from('user_profiles')
       .insert({
@@ -178,24 +110,20 @@ serve(async (req) => {
 
     if (profileCreateError) {
       console.error('Profile creation error:', profileCreateError);
-      // Opcional: eliminar usuario si falla el perfil
-      await supabaseAdmin.auth.admin.deleteUser(userId);
       return new Response(JSON.stringify({ error: 'Error al crear el perfil' }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
     }
 
-    console.log(`✅ Usuario registrado: ${email}`)
-    console.log(`📧 Email de confirmación enviado automáticamente por Supabase`)
+    console.log(`✅ Perfil creado para usuario: ${userId}`)
 
-    // 4. Éxito: email enviado + perfil creado
+    // Éxito: perfil creado
     return new Response(JSON.stringify({
       success: true,
-      message: 'Registro exitoso. Revisa tu email para confirmar tu cuenta.',
-      user: {
+      message: 'Perfil creado exitosamente.',
+      profile: {
         id: profileData.id,
-        email: linkData.user.email,
         first_name: profileData.first_name,
         last_name: profileData.last_name,
         role: profileData.role,

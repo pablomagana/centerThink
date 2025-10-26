@@ -234,20 +234,92 @@ export const userService = {
    * @returns {Promise<{success: boolean, user: Object, message: string}>}
    */
   async register(userData) {
-    const { data, error } = await supabase.functions.invoke('register-user', {
-      body: userData,
+    const { email, password, first_name, last_name, city_id, phone } = userData
+
+    // Validar campos requeridos
+    if (!email || !password || !first_name || !last_name || !city_id) {
+      throw new Error('Todos los campos requeridos deben estar completos')
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      throw new Error('Email no válido')
+    }
+
+    // Validar longitud de contraseña
+    if (password.length < 8) {
+      throw new Error('La contraseña debe tener al menos 8 caracteres')
+    }
+
+    // Validar complejidad de contraseña
+    const hasUpperCase = /[A-Z]/.test(password)
+    const hasLowerCase = /[a-z]/.test(password)
+    const hasNumber = /[0-9]/.test(password)
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      throw new Error('La contraseña debe contener al menos una mayúscula, una minúscula y un número')
+    }
+
+    // 1. Crear usuario con Supabase Auth (esto envía el email de confirmación automáticamente)
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          first_name,
+          last_name
+        },
+        emailRedirectTo: `${window.location.origin}/login`
+      }
+    })
+
+    if (authError) {
+      console.error('Error en signUp:', authError)
+      let errorMessage = 'Error al registrar el usuario'
+      if (authError.message.includes('already registered') || authError.message.includes('User already registered')) {
+        errorMessage = 'Este email ya está registrado'
+      }
+      throw new Error(errorMessage)
+    }
+
+    if (!authData?.user) {
+      throw new Error('No se pudo crear el usuario')
+    }
+
+    console.log(`✅ Usuario creado en auth.users: ${email}`)
+    console.log(`📧 Email de confirmación enviado automáticamente por Supabase`)
+
+    // 2. Crear perfil usando Edge Function (esto requiere service role key)
+    const { data: profileData, error: profileError } = await supabase.functions.invoke('register-user', {
+      body: {
+        userId: authData.user.id,
+        first_name,
+        last_name,
+        city_id,
+        phone
+      },
       method: 'POST'
     })
 
-    if (error) {
-      console.error('Error calling register-user function:', error)
-      throw new Error(error.message || 'Error al registrar el usuario')
+    if (profileError || profileData?.error) {
+      console.error('Error creando perfil:', profileError || profileData?.error)
+      throw new Error('Error al crear el perfil del usuario. Por favor, contacta a soporte.')
     }
 
-    if (data.error) {
-      throw new Error(data.error)
-    }
+    console.log(`✅ Perfil creado en user_profiles`)
 
-    return data
+    return {
+      success: true,
+      message: 'Registro exitoso. Revisa tu email para confirmar tu cuenta.',
+      user: {
+        id: authData.user.id,
+        email: authData.user.email,
+        first_name,
+        last_name,
+        role: 'user',
+        cities: [city_id]
+      }
+    }
   }
 }
