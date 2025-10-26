@@ -127,12 +127,13 @@ serve(async (req) => {
     }
 
     // 1. Crear usuario en auth con confirmación de email requerida
-    // Supabase enviará automáticamente el email de confirmación usando el template nativo
+    // IMPORTANTE: Cuando usamos admin.createUser, Supabase NO envía emails automáticamente
+    // Necesitamos especificar que queremos enviar el email de confirmación
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin
       .createUser({
         email,
         password,
-        email_confirm: false, // Requiere confirmación de email - Supabase enviará el email automáticamente
+        email_confirm: false, // Requiere confirmación de email
         user_metadata: {
           first_name,
           last_name
@@ -187,11 +188,29 @@ serve(async (req) => {
       )
     }
 
-    // 3. Email de confirmación enviado automáticamente por Supabase
-    // Como se creó el usuario con email_confirm: false, Supabase enviará automáticamente
-    // el email de confirmación usando el template configurado en el Dashboard
-    console.log(`✅ Usuario registrado: ${email}`)
-    console.log(`📧 Supabase enviará automáticamente el email de confirmación`)
+    // 3. Enviar email de confirmación manualmente
+    // Cuando usamos admin.createUser, Supabase NO envía el email automáticamente
+    // Necesitamos usar generateLink para obtener el link y activar el envío de email
+    try {
+      const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+        type: 'signup',
+        email: email,
+        options: {
+          redirectTo: `${Deno.env.get('APP_URL') || 'http://localhost:3000'}/login`
+        }
+      })
+
+      if (linkError) {
+        console.error('Error generating confirmation link:', linkError)
+        console.warn('⚠️ Usuario creado pero email de confirmación NO se pudo enviar')
+      } else {
+        console.log(`✅ Usuario registrado: ${email}`)
+        console.log(`📧 Email de confirmación enviado a: ${email}`)
+      }
+    } catch (emailError) {
+      console.error('Error sending confirmation email:', emailError)
+      console.warn('⚠️ Usuario creado pero email de confirmación falló')
+    }
 
     return new Response(
       JSON.stringify({

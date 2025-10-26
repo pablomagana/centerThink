@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirma tu email - centerThink</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh;">
+
+    <!-- Contenedor Principal -->
+    <table role="presentation" style="width: 100%; border-collapse: collapse; padding: 60px 20px;">
+        <tr>
+            <td align="center">
+
+                <!-- Card Principal con Efecto Glassmorphism -->
+                <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.3);">
+
+                    <!-- Header con Animación Visual -->
+                    <tr>
+                        <td style="padding: 0;">
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 56px 40px; text-align: center; position: relative;">
+                                <tr>
+                                    <td>
+                                        <!-- Icono Principal con Efecto -->
+                                        <div style="position: relative; margin: 0 auto 24px; width: 100px; height: 100px;">
+                                            <!-- Círculo exterior animado -->
+                                            <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100px; height: 100px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; animation: pulse 2s infinite;"></div>
+                                            <!-- Círculo interior -->
+                                            <div style="position: relative; width: 100px; height: 100px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);">
+                                                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M3 8L10.89 13.26C11.5436 13.6779 12.4564 13.6779 13.11 13.26L21 8M5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19Z" stroke="url(#gradient1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <defs>
+                                                        <linearGradient id="gradient1" x1="3" y1="5" x2="21" y2="19" gradientUnits="userSpaceOnUse">
+                                                            <stop offset="0%" stop-color="#667eea"/>
+                                                            <stop offset="100%" stop-color="#764ba2"/>
+                                                        </linearGradient>
+                                                    </defs>
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <!-- Título -->
+                                        <h1 style="margin: 0 0 12px 0; color: #ffffff; font-size: 36px; font-weight: 800; letter-spacing: -1px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">
+                                            centerThink
+                                        </h1>
+                                        <p style="margin: 0; color: rgba(255, 255, 255, 0.95); font-size: 16px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">
+                                            Gestión de Thinkglaos
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Contenido Principal -->
+                    <tr>
+                        <td style="padding: 56px 40px 40px 40px;">
+
+                            <!-- Emoji Grande -->
+                            <div style="text-align: center; font-size: 64px; margin: 0 0 24px 0;">
+                                🎉
+                            </div>
+
+                            <h2 style="margin: 0 0 20px 0; color: #1f2937; font-size: 32px; font-weight: 800; text-align: center; letter-spacing: -0.5px;">
+                                ¡Bienvenido/a!
+                            </h2>
+
+                            <p style="margin: 0 0 32px 0; color: #6b7280; font-size: 17px; line-height: 1.7; text-align: center;">
+                                Estamos emocionados de que te unas a centerThink.<br>
+                                Solo un paso más para activar tu cuenta...
+                            </p>
+
+                            <!-- Botón CTA Premium -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 0 0 40px 0;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{ .ConfirmationURL }}"
+                                           style="display: inline-block; padding: 20px 56px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 50px; font-size: 18px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4); text-transform: uppercase; transition: all 0.3s;">
+                                            ✓ Confirmar Email
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Cards de Características -->
+                            <div style="background: linear-gradient(135deg, #f0f9ff 0%, #f3e8ff 100%); border-radius: 16px; padding: 32px 28px; margin: 0 0 32px 0; border: 2px solid rgba(102, 126, 234, 0.1);">
+                                <h3 style="margin: 0 0 24px 0; color: #1f2937; font-size: 20px; font-weight: 700; text-align: center;">
+                                    🚀 Lo que puedes hacer
+                                </h3>
+
+                                <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                    <!-- Feature 1 -->
+                                    <tr>
+                                        <td style="padding: 0 0 20px 0;">
+                                            <table role="presentation" style="width: 100%; border-collapse: collapse; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                                <tr>
+                                                    <td style="width: 48px; vertical-align: middle;">
+                                                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
+                                                            📅
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding-left: 16px; vertical-align: middle;">
+                                                        <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 600; line-height: 1.4;">
+                                                            Gestión completa de eventos
+                                                        </p>
+                                                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">
+                                                            Organiza Thinkglaos en tu ciudad
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Feature 2 -->
+                                    <tr>
+                                        <td style="padding: 0 0 20px 0;">
+                                            <table role="presentation" style="width: 100%; border-collapse: collapse; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                                <tr>
+                                                    <td style="width: 48px; vertical-align: middle;">
+                                                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);">
+                                                            🎤
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding-left: 16px; vertical-align: middle;">
+                                                        <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 600; line-height: 1.4;">
+                                                            Base de datos de ponentes
+                                                        </p>
+                                                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">
+                                                            Conecta con speakers profesionales
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Feature 3 -->
+                                    <tr>
+                                        <td style="padding: 0;">
+                                            <table role="presentation" style="width: 100%; border-collapse: collapse; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                                <tr>
+                                                    <td style="width: 48px; vertical-align: middle;">
+                                                        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);">
+                                                            ✅
+                                                        </div>
+                                                    </td>
+                                                    <td style="padding-left: 16px; vertical-align: middle;">
+                                                        <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 600; line-height: 1.4;">
+                                                            Seguimiento de tareas
+                                                        </p>
+                                                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">
+                                                            Organiza todas tus actividades
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Separador Decorativo -->
+                            <div style="height: 2px; background: linear-gradient(to right, transparent, #e5e7eb, transparent); margin: 32px 0;"></div>
+
+                            <!-- Link Alternativo -->
+                            <div style="background: #f9fafb; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb;">
+                                <p style="margin: 0 0 8px 0; color: #4b5563; font-size: 13px; font-weight: 600; text-align: center;">
+                                    ¿No funciona el botón?
+                                </p>
+                                <p style="margin: 0 0 12px 0; color: #6b7280; font-size: 12px; text-align: center;">
+                                    Copia y pega este enlace en tu navegador:
+                                </p>
+                                <p style="margin: 0; word-break: break-all; background: white; padding: 12px; border-radius: 8px; border: 1px dashed #d1d5db;">
+                                    <a href="{{ .ConfirmationURL }}"
+                                       style="color: #667eea; font-size: 11px; text-decoration: none; font-family: monospace;">
+                                        {{ .ConfirmationURL }}
+                                    </a>
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 32px 40px; background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); border-top: 1px solid #e5e7eb;">
+
+                            <!-- Aviso de Seguridad -->
+                            <div style="background: linear-gradient(135deg, #fef3c7, #fef9e7); border-left: 4px solid #f59e0b; border-radius: 10px; padding: 16px 20px; margin: 0 0 28px 0;">
+                                <p style="margin: 0; color: #92400e; font-size: 13px; line-height: 1.6; text-align: center;">
+                                    <strong>⚠️ Importante:</strong> Este enlace expira en <strong>24 horas</strong>
+                                </p>
+                            </div>
+
+                            <!-- Link a la App -->
+                            <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 14px; text-align: center; line-height: 1.6;">
+                                Una vez confirmada, accede a tu cuenta en:
+                            </p>
+                            <p style="margin: 0 0 28px 0; text-align: center;">
+                                <a href="{{ .SiteURL }}"
+                                   style="color: #667eea; font-size: 16px; text-decoration: none; font-weight: 600;">
+                                    {{ .SiteURL }} →
+                                </a>
+                            </p>
+
+                            <!-- Línea Separadora -->
+                            <div style="height: 1px; background-color: #e5e7eb; margin: 0 0 24px 0;"></div>
+
+                            <!-- Info de Contacto -->
+                            <p style="margin: 0 0 12px 0; color: #9ca3af; font-size: 13px; text-align: center;">
+                                ¿Necesitas ayuda?
+                            </p>
+                            <p style="margin: 0 0 24px 0; text-align: center;">
+                                <a href="mailto:info@pablomagana.es"
+                                   style="display: inline-block; padding: 10px 24px; background: white; color: #667eea; text-decoration: none; border-radius: 20px; font-size: 13px; font-weight: 600; border: 2px solid #e5e7eb;">
+                                    📧 Contactar Soporte
+                                </a>
+                            </p>
+
+                            <!-- Copyright -->
+                            <p style="margin: 0; color: #9ca3af; font-size: 12px; text-align: center; line-height: 1.6;">
+                                © 2024 centerThink · Todos los derechos reservados
+                            </p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+                <!-- Mensaje de Seguridad Exterior -->
+                <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; margin-top: 24px;">
+                    <tr>
+                        <td style="text-align: center; padding: 0 20px;">
+                            <p style="margin: 0; color: rgba(255, 255, 255, 0.9); font-size: 12px; line-height: 1.6; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);">
+                                Si no creaste esta cuenta, puedes ignorar este mensaje de forma segura.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
