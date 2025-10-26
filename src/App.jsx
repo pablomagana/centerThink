@@ -10,6 +10,7 @@ import EventsPage from './Pages/Events';
 import CalendarPage from './Pages/Calendar';
 import SpeakersPage from './Pages/Speakers';
 import VenuesPage from './Pages/Venues';
+import OrdersPage from './Pages/Orders';
 import UsersPage from './Pages/Users';
 import CitiesPage from './Pages/Cities';
 import EventDetailsPage from './Pages/EventDetails';
@@ -96,6 +97,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Layout currentPageName="Locales"><VenuesPage /></Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/orders"
+        element={
+          <ProtectedRoute>
+            <Layout currentPageName="Pedidos"><OrdersPage /></Layout>
           </ProtectedRoute>
         }
       />
