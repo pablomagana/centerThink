@@ -126,110 +126,85 @@ serve(async (req) => {
       )
     }
 
-    // 1. Crear usuario en auth con confirmación de email requerida
-    // IMPORTANTE: Cuando usamos admin.createUser, Supabase NO envía emails automáticamente
-    // Necesitamos especificar que queremos enviar el email de confirmación
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin
-      .createUser({
-        email,
-        password,
-        email_confirm: false, // Requiere confirmación de email
-        user_metadata: {
+    // 1. Generar link de confirmación (esto crea el usuario + envía email)
+    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'signup',
+      email,
+      password, // ¡Importante! Incluir password aquí
+      options: {
+        redirectTo: `${Deno.env.get('APP_URL') || 'http://localhost:3000'}/login`,
+        data: { // Esto va a user_metadata
           first_name,
           last_name
         }
-      })
-
-    if (authError) {
-      console.error('Auth error:', authError)
-
-      // Mensajes de error más amigables
-      let errorMessage = 'Error al crear el usuario'
-      if (authError.message.includes('already registered')) {
-        errorMessage = 'Este email ya está registrado'
-      } else if (authError.message.includes('invalid email')) {
-        errorMessage = 'Email inválido'
-      } else if (authError.message.includes('password')) {
-        errorMessage = 'La contraseña no cumple los requisitos'
       }
+    });
 
-      return new Response(
-        JSON.stringify({ error: errorMessage }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      )
+    if (linkError) {
+      console.error('Error generating signup link:', linkError);
+      let errorMessage = 'Error al registrar el usuario';
+      if (linkError.message.includes('already registered')) {
+        errorMessage = 'Este email ya está registrado';
+      }
+      return new Response(JSON.stringify({ error: errorMessage }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
     }
 
-    // 2. Crear perfil en user_profiles
+    if (!linkData?.user) {
+      return new Response(JSON.stringify({ error: 'No se pudo crear el usuario' }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    // 2. El usuario ya fue creado por generateLink → usar su ID
+    const userId = linkData.user.id;
+
+    // 3. Crear perfil
     const { data: profileData, error: profileCreateError } = await supabaseAdmin
       .from('user_profiles')
       .insert({
-        id: authData.user.id,
+        id: userId,
         first_name,
         last_name,
-        role: 'user', // Rol por defecto para auto-registro
-        cities: [city_id], // Array con la ciudad seleccionada
+        role: 'user',
+        cities: [city_id],
         phone: phone || null
       })
       .select()
-      .single()
+      .single();
 
     if (profileCreateError) {
-      console.error('Profile creation error:', profileCreateError)
-
-      // Si falla la creación del perfil, eliminar el usuario de auth
-      await supabaseAdmin.auth.admin.deleteUser(authData.user.id)
-
-      return new Response(
-        JSON.stringify({
-          error: 'Error al crear el perfil de usuario',
-          details: profileCreateError
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      )
-    }
-
-    // 3. Enviar email de confirmación manualmente
-    // Cuando usamos admin.createUser, Supabase NO envía el email automáticamente
-    // Necesitamos usar generateLink para obtener el link y activar el envío de email
-    try {
-      const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-        type: 'signup',
-        email: email,
-        options: {
-          redirectTo: `${Deno.env.get('APP_URL') || 'http://localhost:3000'}/login`
-        }
-      })
-
-      if (linkError) {
-        console.error('Error generating confirmation link:', linkError)
-        console.warn('⚠️ Usuario creado pero email de confirmación NO se pudo enviar')
-      } else {
-        console.log(`✅ Usuario registrado: ${email}`)
-        console.log(`📧 Email de confirmación enviado a: ${email}`)
-      }
-    } catch (emailError) {
-      console.error('Error sending confirmation email:', emailError)
-      console.warn('⚠️ Usuario creado pero email de confirmación falló')
-    }
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        user: {
-          id: profileData.id,
-          email: authData.user.email,
-          first_name: profileData.first_name,
-          last_name: profileData.last_name,
-          role: profileData.role,
-          cities: profileData.cities
-        },
-        message: 'Registro exitoso. Por favor revisa tu email para confirmar tu cuenta.'
-      }),
-      {
-        status: 200,
+      console.error('Profile creation error:', profileCreateError);
+      // Opcional: eliminar usuario si falla el perfil
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+      return new Response(JSON.stringify({ error: 'Error al crear el perfil' }), {
+        status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    console.log(`✅ Usuario registrado: ${email}`)
+    console.log(`📧 Email de confirmación enviado automáticamente por Supabase`)
+
+    // 4. Éxito: email enviado + perfil creado
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Registro exitoso. Revisa tu email para confirmar tu cuenta.',
+      user: {
+        id: profileData.id,
+        email: linkData.user.email,
+        first_name: profileData.first_name,
+        last_name: profileData.last_name,
+        role: profileData.role,
+        cities: profileData.cities
       }
-    )
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
+    });
 
   } catch (error) {
     console.error('Unexpected error:', error)
