@@ -17,7 +17,36 @@ export const userService = {
 
     const { data, error } = await query
     if (error) throw error
-    return data || []
+
+    // Para cada usuario, obtener el estado de verificación de email desde auth
+    // Esto requiere llamar a una Edge Function ya que no podemos acceder a auth.users directamente
+    const usersWithVerification = await Promise.all(
+      (data || []).map(async (user) => {
+        try {
+          // Llamar a Edge Function que nos devuelva el estado de verificación
+          const { data: verificationData } = await supabase.functions.invoke('get-user-verification-status', {
+            body: { userId: user.id },
+            method: 'POST'
+          })
+
+          return {
+            ...user,
+            email_verified: verificationData?.email_verified || false,
+            email_confirmed_at: verificationData?.email_confirmed_at || null
+          }
+        } catch (err) {
+          // Si falla, asumimos que no está verificado
+          console.warn(`Could not get verification status for user ${user.id}:`, err)
+          return {
+            ...user,
+            email_verified: false,
+            email_confirmed_at: null
+          }
+        }
+      })
+    )
+
+    return usersWithVerification
   },
 
   async get(id) {
@@ -190,6 +219,30 @@ export const userService = {
     if (error) {
       console.error('Error calling reset-user-password function:', error)
       throw new Error(error.message || 'Error al enviar email de recuperación')
+    }
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
+  },
+
+  /**
+   * Verifica/valida el email de un usuario manualmente
+   * Solo admin y supplier pueden usar esta función
+   * @param {string} userId - ID del usuario a verificar
+   * @returns {Promise<{success: boolean, message: string}>}
+   */
+  async verifyUserEmail(userId) {
+    const { data, error } = await supabase.functions.invoke('verify-user-email', {
+      body: { userId },
+      method: 'POST'
+    })
+
+    if (error) {
+      console.error('Error calling verify-user-email function:', error)
+      throw new Error(error.message || 'Error al verificar el email del usuario')
     }
 
     if (data.error) {

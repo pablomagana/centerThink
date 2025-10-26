@@ -10,6 +10,8 @@ import {
   MapPin,
   Shield,
   Trash2,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -95,14 +97,27 @@ export default function UsersList({ users, cities, onEdit, onDelete }) {
               <CardContent className="space-y-4 flex-1 flex flex-col justify-between">
                 <div className="space-y-3">
                   {user.email && (
-                    <div className="flex items-center gap-2 text-slate-600">
-                      <Mail className="w-4 h-4 text-slate-400" />
-                      <a
-                        href={`mailto:${user.email}`}
-                        className="text-sm hover:text-blue-600 transition-colors truncate"
-                      >
-                        {user.email}
-                      </a>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-slate-600">
+                        <Mail className="w-4 h-4 text-slate-400" />
+                        <a
+                          href={`mailto:${user.email}`}
+                          className="text-sm hover:text-blue-600 transition-colors truncate"
+                        >
+                          {user.email}
+                        </a>
+                      </div>
+                      {user.email_verified ? (
+                        <div className="flex items-center gap-1.5 text-green-600 ml-6">
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span className="text-xs">Email verificado</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 text-orange-600 ml-6">
+                          <AlertCircle className="w-3 h-3" />
+                          <span className="text-xs">Email sin verificar</span>
+                        </div>
+                      )}
                     </div>
                   )}
 

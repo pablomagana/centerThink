@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserPlus, X, Loader2, KeyRound, Mail, Eye, EyeOff } from "lucide-react";
+import { UserPlus, X, Loader2, KeyRound, Mail, Eye, EyeOff, CheckCircle2, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   DialogHeader,
@@ -64,6 +64,10 @@ export default function UserCreateForm({
   const [isResetting, setIsResetting] = useState(false);
   const [resetSuccess, setResetSuccess] = useState<string | null>(null);
 
+  // Estados para verificación de email
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationSuccess, setVerificationSuccess] = useState<string | null>(null);
+
   // Filtrar ciudades disponibles según el rol del usuario actual
   const availableCities = currentUserRole === "admin"
     ? cities
@@ -119,6 +123,30 @@ export default function UserCreateForm({
     }
   };
 
+  const handleVerifyEmail = async () => {
+    if (!user?.id) return;
+
+    if (!confirm(`¿Verificar manualmente el email de ${user.first_name} ${user.last_name}?`)) {
+      return;
+    }
+
+    setIsVerifying(true);
+    setVerificationSuccess(null);
+
+    try {
+      await User.verifyUserEmail(user.id);
+      setVerificationSuccess(`Email verificado exitosamente para ${user.email}`);
+      // Actualizar el estado local del usuario
+      if (user) {
+        user.email_verified = true;
+      }
+    } catch (error: any) {
+      alert(`Error al verificar email: ${error.message}`);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   const selectedCities = availableCities.filter(city => formData.cities.includes(city.id));
 
   const roleOptions = [
@@ -164,18 +192,62 @@ export default function UserCreateForm({
             <Label htmlFor="email">
               Email <span className="text-red-500">*</span>
             </Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              placeholder="usuario@ejemplo.com"
-              required
-              disabled={isSubmitting || isEditMode}
-              className="h-12 px-4"
-            />
-            {isEditMode && (
-              <p className="text-xs text-slate-500">El email no puede ser modificado</p>
+            <div className="flex gap-2 items-start">
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                placeholder="usuario@ejemplo.com"
+                required
+                disabled={isSubmitting || isEditMode}
+                className="h-12 px-4 flex-1"
+              />
+              {isEditMode && user && (
+                <div className="flex items-center gap-2">
+                  {user.email_verified ? (
+                    <Badge className="bg-green-100 text-green-700 h-12 px-4 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4" />
+                      Verificado
+                    </Badge>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleVerifyEmail}
+                      disabled={isSubmitting || isVerifying}
+                      className="h-12 px-4 border-orange-300 text-orange-700 hover:bg-orange-50"
+                    >
+                      {isVerifying ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Verificando...
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle className="w-4 h-4 mr-2" />
+                          Verificar Email
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+            {isEditMode && !user?.email_verified && (
+              <p className="text-xs text-orange-600 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                Este usuario aún no ha verificado su email
+              </p>
+            )}
+            {isEditMode && user?.email_verified && (
+              <p className="text-xs text-green-600 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Email verificado
+              </p>
+            )}
+            {verificationSuccess && (
+              <p className="text-xs text-green-600">{verificationSuccess}</p>
             )}
           </div>
 
