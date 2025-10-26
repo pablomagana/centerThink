@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Layout from './Layout';
 import LoginPage from './Pages/Login';
 import RegisterPage from './Pages/Register';
+import ForgotPasswordPage from './Pages/ForgotPassword';
+import ResetPasswordPage from './Pages/ResetPassword';
 import EventsPage from './Pages/Events';
 import CalendarPage from './Pages/Calendar';
 import SpeakersPage from './Pages/Speakers';
@@ -44,6 +46,14 @@ function AppRoutes() {
       <Route
         path="/register"
         element={user ? <Navigate to="/events" replace /> : <RegisterPage />}
+      />
+      <Route
+        path="/forgot-password"
+        element={user ? <Navigate to="/events" replace /> : <ForgotPasswordPage />}
+      />
+      <Route
+        path="/reset-password"
+        element={<ResetPasswordPage />}
       />
       <Route
         path="/"
