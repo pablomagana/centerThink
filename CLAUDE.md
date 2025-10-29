@@ -9,9 +9,12 @@ This is **centerThink**, an event management application for organizing "Thinkgl
 **Tech Stack:**
 - React 18 + Vite
 - React Router for routing
+- Supabase (authentication, database, Edge Functions)
 - Tailwind CSS + shadcn/ui for styling
 - Lucide React for icons
 - Framer Motion for animations
+- EmailJS (for user credential emails)
+- date-fns (date formatting)
 
 ## Development Commands
 
@@ -38,8 +41,8 @@ npm run lint
 
 ```
 src/
-├── api/             # API client layer
-│   └── base44Client.js  # Base44 API client with Entity classes
+├── api/             # API client layer (legacy wrapper)
+│   └── base44Client.js  # Supabase client wrapper with Entity classes
 ├── components/       # React components organized by feature
 │   ├── ui/          # shadcn/ui base components (button, card, input, select, alert, etc.)
 │   ├── events/      # Event-related components
@@ -48,13 +51,33 @@ src/
 │   ├── cities/      # City components
 │   ├── users/       # User components
 │   └── profile/     # Profile page components (ProfileForm, PasswordChangeForm)
-├── entities/        # Data schema definitions + Entity class exports
+├── contexts/        # React Context providers
+│   └── AuthContext.jsx  # Authentication context with Supabase integration
+├── entities/        # Data schema definitions + Entity service exports
+├── lib/             # Core libraries
+│   └── supabase.js  # Supabase client configuration
+├── services/        # Business logic layer (primary data access)
+│   ├── auth.service.js    # Authentication operations
+│   ├── user.service.js    # User CRUD + Edge Function calls
+│   ├── event.service.js   # Event operations
+│   ├── speaker.service.js # Speaker operations
+│   ├── venue.service.js   # Venue operations
+│   ├── city.service.js    # City operations
+│   └── email.service.js   # EmailJS integration
 ├── Pages/           # Page components
-├── Layout.js        # Main layout with sidebar
+├── Layout.jsx       # Main layout with sidebar
 ├── App.jsx          # Route configuration
 ├── main.jsx         # Application entry point
 ├── utils.js         # Shared utilities (cn, createPageUrl)
 └── index.css        # Global styles with Tailwind
+
+supabase/functions/  # Supabase Edge Functions (Deno runtime)
+├── create-user/              # Create user in auth + profiles
+├── delete-user/              # Delete user from auth + profiles
+├── reset-user-password/      # Manual password reset + recovery email
+├── register-user/            # Public user registration
+├── verify-user-email/        # Manual email verification
+└── get-user-verification-status/  # Check email verification
 ```
 
 ### Entity-Driven Design
@@ -73,19 +96,59 @@ The application follows a schema-first approach where all data models are define
 - `OrderType` - Types of tasks/orders with priority levels
 - `EventOrder` - Tasks associated with events, assigned to users
 
-### Application Context
+### Data Access Layer Architecture
 
-The app uses a centralized context pattern via `AppContextProvider` that manages:
-- Current user authentication and role
-- User's assigned cities (filtered by active status)
-- Selected city (persisted to localStorage)
-- Loading states
+The application uses a **two-layer architecture** for data access:
+
+1. **Services Layer** (`src/services/*.service.js`) - **Primary layer**: Direct Supabase client operations
+   - All new code should use services directly
+   - Located in `src/services/`
+   - Each service exports an object with methods (list, get, create, update, delete, etc.)
+   - Example: `import { userService } from '@/services/user.service'`
+
+2. **Entity Layer** (`src/entities/*.js`) - **Legacy wrapper**: Exports service instances
+   - Maintained for backward compatibility
+   - Entity files export the corresponding service instance
+   - Example: `Event.js` exports `eventService` as `Event`
+   - Schema definitions remain in entity files
+
+**Recommended Pattern:**
+```javascript
+// ✅ Preferred: Use services directly
+import { userService } from '@/services/user.service'
+const users = await userService.list()
+
+// ✅ Also valid: Use via entity exports (legacy)
+import { User } from '@/entities/User'
+const users = await User.list()
+```
+
+### Authentication Architecture
+
+The app uses **dual context pattern** for authentication and app state:
+
+**1. AuthContext** (`src/contexts/AuthContext.jsx`):
+- Manages Supabase authentication state
+- Provides: `user` (Supabase auth user), `profile` (user_profiles data), `session`, `loading`
+- Methods: `signIn()`, `signOut()`, `refreshProfile()`
+- Listens to Supabase `onAuthStateChange` events
+- Auto-loads user profile on authentication
+
+**2. AppContext** (`src/components/AppContextProvider.tsx`):
+- Depends on AuthContext
+- Manages application-level state:
+  - `currentUser` / `profile`: Current user with full profile data
+  - `userCities`: Cities assigned to current user (filtered by active status)
+  - `selectedCity`: Currently selected city (persisted to localStorage)
+  - `appIsLoading`: Loading state for app initialization
+- Provides city management for multi-tenant filtering
 
 **Context Flow:**
-1. On app load, fetches current user via `User.me()`
-2. Loads all cities and filters by user's assigned cities
-3. Restores previously selected city from localStorage or defaults to first city
-4. All pages respect the selected city context for filtering data
+1. App loads → AuthContext checks Supabase session
+2. If authenticated → loads user profile from `user_profiles` table
+3. AppContext loads user's assigned cities
+4. Restores previously selected city from localStorage or defaults to first city
+5. All pages respect `selectedCity` from AppContext for data filtering
 
 ### Layout and Navigation
 
@@ -129,25 +192,35 @@ Components are organized by feature in subdirectories:
 - `src/components/profile/` - ProfileForm (edit own profile), PasswordChangeForm (change password)
 - `src/components/ui/` - Base shadcn/ui components (Button, Card, Input, Select, Alert, etc.)
 
-### Entity API Pattern
+### Service Layer API Pattern
 
-Entities are implemented via the Base44 API client (`src/api/base44Client.js`). Each entity file in `src/entities/` exports:
-- A schema object (e.g., `CitySchema`) with validation rules
-- An Entity class instance (e.g., `City`) with CRUD methods
+Services provide direct Supabase database access. All services follow a consistent CRUD pattern:
 
-**Available Entity Methods:**
-- `Entity.list(sortOrder?, limit?)` - Fetch all records, optionally sorted (e.g., "-date") with limit
-- `Entity.get(id)` - Fetch single record by ID
-- `Entity.create(data)` - Create new record (only creates in entity table)
-- `Entity.update(id, data)` - Update existing record
-- `Entity.delete(id)` - Delete record
-- `User.me()` - Special method to fetch current authenticated user
-- `User.createComplete(userData)` - Creates complete user (auth + profile) via Edge Function
+**Standard Service Methods:**
+- `service.list(sortOrder?, limit?)` - Fetch all records, optionally sorted (e.g., "-date") with limit
+- `service.get(id)` - Fetch single record by ID
+- `service.create(data)` - Create new record
+- `service.update(id, data)` - Update existing record
+- `service.delete(id)` - Delete record
 
-**API Configuration:**
-- Set `VITE_API_BASE_URL` in `.env` file (see `.env.example`)
-- Default: `http://localhost:8000/api`
-- All API calls use `fetch` with credentials: 'include' for authentication
+**User Service Special Methods:**
+- `userService.me()` - Fetch current authenticated user profile
+- `userService.createComplete(userData)` - Creates user in auth + profiles via Edge Function
+- `userService.deleteComplete(userId)` - Deletes user from auth + profiles via Edge Function
+- `userService.resetPassword(userId, newPassword)` - Set new password via Edge Function
+- `userService.sendPasswordResetEmail(userId)` - Send recovery email via Edge Function
+- `userService.verifyUserEmail(userId)` - Manually verify user email via Edge Function
+- `userService.register(userData)` - Public user registration (no auth required)
+- `userService.getPublicCities()` - Get cities available for public registration
+
+**Supabase Configuration:**
+Environment variables required in `.env`:
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+All database operations use the Supabase client from `src/lib/supabase.js` with automatic session management.
 
 ### Automatic Event Title Generation
 
@@ -172,9 +245,48 @@ Events track confirmed volunteers with arrival times via `confirmed_volunteers` 
 - `user_id` - Reference to volunteer user
 - `arrival_time` - When the volunteer will arrive
 
-### User Creation System
+### Public User Registration
 
-User creation is handled through a Supabase Edge Function to ensure secure authentication setup:
+The application supports public user registration where users can create their own accounts:
+
+**Components:**
+- `Register.tsx` - Public registration page
+- `supabase/functions/register-user/` - Edge Function handling registration
+- `userService.register(userData)` - Client method for registration
+- `userService.getPublicCities()` - Fetch available cities for registration
+
+**Registration Flow:**
+1. User visits `/register` (no authentication required)
+2. User fills out form: email, password, first_name, last_name, city_id, phone (optional)
+3. Frontend validates password requirements:
+   - Minimum 8 characters
+   - At least one uppercase letter
+   - At least one lowercase letter
+   - At least one number
+4. Frontend calls `userService.register()` which:
+   - Creates user in `auth.users` via `supabase.auth.signUp()`
+   - Supabase automatically sends confirmation email
+   - Calls Edge Function to create profile in `user_profiles`
+5. User receives confirmation email from Supabase
+6. User must verify email before logging in
+
+**Key Features:**
+- No admin intervention required
+- All registered users default to `user` role
+- Users are assigned to the city they selected during registration
+- Email verification required (enforced by Supabase)
+- Uses Supabase native email templates (configured in Supabase Dashboard)
+
+**Email Configuration:**
+Registration confirmation emails use Supabase's built-in system:
+1. Go to Supabase Dashboard → Authentication → Email Templates
+2. Configure "Confirm signup" template
+3. Set Site URL and Redirect URLs in URL Configuration
+4. See `docs/SETUP-EMAILS.md` for detailed setup guide
+
+### User Creation System (Admin/Supplier)
+
+Admin and Supplier users can create accounts for other users through a Supabase Edge Function:
 
 **Components:**
 - `UserCreateForm.tsx` - Form component for creating new users with role and city assignment
@@ -200,6 +312,39 @@ User creation is handled through a Supabase Edge Function to ensure secure authe
 - Edge Function validates creator permissions before proceeding
 - Automatic rollback if profile creation fails
 - Secure password generation (16 characters, mixed case, numbers, symbols)
+
+### Email Verification System
+
+The application tracks email verification status for all users and allows manual verification:
+
+**Components:**
+- Edge Function: `supabase/functions/verify-user-email/` - Manually verify user email
+- Edge Function: `supabase/functions/get-user-verification-status/` - Check verification status
+- `userService.verifyUserEmail(userId)` - Client method to manually verify email
+- `UsersList.tsx` - Displays verification status with badge indicators
+
+**Verification Flow:**
+1. Users register → Supabase sends confirmation email automatically
+2. User clicks link in email → email verified in `auth.users`
+3. User list displays verification status:
+   - ✅ Green badge: Email verified
+   - ❌ Red badge: Email not verified
+4. Admin/Supplier can manually verify if needed:
+   - Click "Verificar Email" button in user list
+   - Calls Edge Function to update `email_confirmed_at` in auth.users
+   - Updates verification status immediately
+
+**Verification Status:**
+- Stored in `auth.users.email_confirmed_at` (Supabase managed)
+- Fetched via `get-user-verification-status` Edge Function
+- Displayed in user list with color-coded badges
+- Manual verification available for admin/supplier roles
+
+**Use Cases for Manual Verification:**
+- User didn't receive confirmation email
+- Email service temporarily unavailable
+- Testing/development purposes
+- Admin creating accounts on behalf of users
 
 ### User Deletion System
 
@@ -399,6 +544,76 @@ Users can access their profile page by clicking on their email in the sidebar fo
 - Updates reflected immediately in sidebar after profile save
 - Uses `AuthContext.refreshProfile()` to sync changes across the app
 
+## Supabase Edge Functions
+
+The application uses Supabase Edge Functions (Deno runtime) for server-side operations that require elevated privileges:
+
+**Available Edge Functions:**
+
+1. **create-user** - Create complete user (auth + profile)
+   - Requires authentication (admin/supplier)
+   - Validates permissions based on role and cities
+   - Generates secure random password
+   - Returns temp password for email delivery
+
+2. **delete-user** - Delete user from auth and profiles
+   - Requires authentication (admin/supplier)
+   - Prevents self-deletion
+   - Deletes from user_profiles first, then auth.users
+   - Validates permissions
+
+3. **reset-user-password** - Reset user password
+   - Two modes: manual password set OR send recovery email
+   - Requires authentication (admin/supplier)
+   - Validates requester has permission to manage target user
+   - Supports city-based permissions for suppliers
+
+4. **register-user** - Public user registration
+   - GET: Returns list of available cities
+   - POST: Creates user profile after Supabase auth signup
+   - No authentication required
+   - Assigns user to selected city with 'user' role
+
+5. **verify-user-email** - Manually verify user email
+   - Requires authentication (admin/supplier)
+   - Updates email_confirmed_at in auth.users
+   - Used when automatic verification fails
+
+6. **get-user-verification-status** - Check email verification
+   - Requires authentication
+   - Returns email verification status from auth.users
+   - Used by user list to display badges
+
+**Deployment:**
+```bash
+# Deploy all functions
+supabase functions deploy
+
+# Deploy specific function
+supabase functions deploy create-user
+```
+
+**Testing Locally:**
+```bash
+# Start Supabase locally
+supabase start
+
+# Serve functions locally
+supabase functions serve
+
+# Test function
+curl -i --location --request POST 'http://localhost:54321/functions/v1/your-function' \
+  --header 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  --header 'Content-Type: application/json' \
+  --data '{"key":"value"}'
+```
+
+**Important Notes:**
+- Edge Functions run in Deno runtime (not Node.js)
+- Use Deno imports: `import { serve } from "https://deno.land/std@0.168.0/http/server.ts"`
+- Functions require service role key for admin operations (stored in Supabase secrets)
+- All functions validate JWT tokens for authenticated endpoints
+
 ## Configuration Files
 
 - `vite.config.js` - Vite bundler configuration with path aliases
@@ -407,3 +622,4 @@ Users can access their profile page by clicking on their email in the sidebar fo
 - `postcss.config.js` - PostCSS configuration for Tailwind
 - `.eslintrc.cjs` - ESLint rules for React
 - `package.json` - Dependencies and scripts
+- `.env` - Environment variables (see `.env.example` for required variables)
