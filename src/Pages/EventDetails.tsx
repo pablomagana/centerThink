@@ -9,11 +9,11 @@ import { User } from '@/entities/User';
 import { AppContext } from '@/components/AppContextProvider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
-import { UserCheck, Clock, Users, Calendar, MapPin as MapPinIcon, Mic, Building2, Info, ListChecks, CheckSquare, Video, Image, TrainFront, BedDouble, Loader2 } from 'lucide-react';
+import { UserCheck, Clock, Users, Calendar, MapPin as MapPinIcon, Mic, Building2, Info, ListChecks, CheckSquare, Video, Image, TrainFront, BedDouble, RefreshCw } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -118,6 +118,34 @@ export default function EventDetailsPage() {
       setIsConfirming(false);
     }
 
+    const handlePreparationStatusChange = async (preparationKey, newStatus) => {
+        if (!event) return;
+
+        // Initialize preparations if it doesn't exist
+        const currentPreparations = event.preparations || {
+            presentation_video: 'pendiente',
+            poster_image: 'pendiente',
+            transport: 'pendiente',
+            accommodation: 'pendiente'
+        };
+
+        const updatedPreparations = {
+            ...currentPreparations,
+            [preparationKey]: newStatus
+        };
+
+        try {
+            const updatedEvent = await Event.update(event.id, { preparations: updatedPreparations });
+            // Update local state with the response from server
+            setEvent(updatedEvent);
+        } catch (error) {
+            console.error("Error updating preparation status:", error);
+            alert('No se pudo actualizar el estado del preparativo. Por favor intenta de nuevo.');
+            // Reload data to revert to server state if update failed
+            await loadData();
+        }
+    };
+
     const isCurrentUserConfirmed = currentUser && relatedData.volunteers.some(v => v.user_id === currentUser.id);
 
     if (isLoading) {
@@ -138,7 +166,7 @@ export default function EventDetailsPage() {
     
     const preparationStatusConfig = {
       pendiente: { label: "Pendiente", color: "bg-amber-100 text-amber-700", icon: Clock },
-      procesando: { label: "Procesando", color: "bg-blue-100 text-blue-700", icon: Loader2 },
+      procesando: { label: "Procesando", color: "bg-blue-100 text-blue-700", icon: RefreshCw },
       resuelto: { label: "Resuelto", color: "bg-emerald-100 text-emerald-700", icon: CheckSquare },
     };
 
@@ -183,15 +211,37 @@ export default function EventDetailsPage() {
                                 const config = preparationStatusConfig[statusKey];
                                 const Icon = config.icon;
                                 const ItemIcon = item.icon;
-                                
+
                                 return (
-                                    <div key={item.key} className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-lg border">
+                                    <div key={item.key} className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-lg border hover:shadow-md transition-shadow">
                                         <ItemIcon className="w-7 h-7 text-slate-500 mb-2"/>
-                                        <p className="text-sm font-semibold text-slate-800 text-center mb-2">{item.label}</p>
-                                        <Badge className={`${config.color} capitalize`}>
-                                            <Icon className={`w-3.5 h-3.5 mr-1.5 ${statusKey === 'procesando' ? 'animate-spin' : ''}`} />
-                                            {config.label}
-                                        </Badge>
+                                        <p className="text-sm font-semibold text-slate-800 text-center mb-3">{item.label}</p>
+                                        <Select
+                                            value={statusKey}
+                                            onValueChange={(newStatus) => handlePreparationStatusChange(item.key, newStatus)}
+                                        >
+                                            <SelectTrigger className={`w-full h-auto ${config.color} border-0 font-medium`}>
+                                                <SelectValue>
+                                                    <div className="flex items-center justify-center gap-1.5">
+                                                        <Icon className="w-3.5 h-3.5" />
+                                                        <span className="text-xs">{config.label}</span>
+                                                    </div>
+                                                </SelectValue>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {Object.entries(preparationStatusConfig).map(([key, value]) => {
+                                                    const StatusIcon = value.icon;
+                                                    return (
+                                                        <SelectItem key={key} value={key}>
+                                                            <div className="flex items-center gap-2">
+                                                                <StatusIcon className="w-4 h-4" />
+                                                                <span>{value.label}</span>
+                                                            </div>
+                                                        </SelectItem>
+                                                    );
+                                                })}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                 );
                             })}
@@ -202,7 +252,7 @@ export default function EventDetailsPage() {
                     <Card>
                         <CardHeader><CardTitle className="flex items-center gap-2"><UserCheck className="w-5 h-5 text-emerald-600"/>Voluntarios Confirmados ({relatedData.volunteers.length})</CardTitle></CardHeader>
                         <CardContent>
-                            {currentUser?.role === 'user' && (
+                            {currentUser && (
                                 <Dialog>
                                     <DialogTrigger asChild>
                                         <Button className={isCurrentUserConfirmed ? "bg-red-600 hover:bg-red-700" : "bg-emerald-600 hover:bg-emerald-700"} disabled={isConfirming}>

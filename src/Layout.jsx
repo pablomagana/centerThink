@@ -1,5 +1,5 @@
 
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -12,8 +12,6 @@ import {
   ChevronDown,
   User as UserIcon,
   CalendarDays,
-  ChevronRight,
-  ChevronLeft,
   LogOut
 } from "lucide-react";
 import {
@@ -100,8 +98,6 @@ function MainLayout({ children, currentPageName }) {
     setSelectedCity,
     appIsLoading
   } = useContext(AppContext);
-
-  const [debugExpanded, setDebugExpanded] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -194,53 +190,6 @@ function MainLayout({ children, currentPageName }) {
 
   return (
     <SidebarProvider>
-      {/* DEBUG PANEL - Remove this after debugging */}
-      <div className={`fixed bottom-4 right-4 bg-red-50 border-2 border-red-500 rounded-lg shadow-lg z-50 transition-all duration-300 ${
-        debugExpanded ? 'max-w-sm' : 'w-auto'
-      }`}>
-        <div className="flex items-start justify-between gap-2 p-4 pb-2">
-          <h3 className="font-bold text-red-800 text-sm">🐛 DEBUG INFO</h3>
-          <button
-            onClick={() => setDebugExpanded(!debugExpanded)}
-            className="text-red-700 hover:text-red-900 hover:bg-red-100 rounded p-1 transition-colors"
-            title={debugExpanded ? "Minimizar" : "Expandir"}
-          >
-            {debugExpanded ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
-        </div>
-
-        {debugExpanded && (
-          <>
-            <div className="space-y-1 text-xs text-gray-800 mb-3 px-4">
-              <div><strong>User exists:</strong> {currentUser ? '✅ YES' : '❌ NO'}</div>
-              <div><strong>User role:</strong> <span className="font-mono bg-yellow-100 px-1">{currentUser?.role || 'undefined'}</span></div>
-              <div><strong>User email:</strong> {currentUser?.email || 'undefined'}</div>
-              <div><strong>settingsItems count:</strong> {settingsItems.length}</div>
-              <div><strong>visibleSettings count:</strong> <span className="font-mono bg-yellow-100 px-1">{visibleSettingsItems.length}</span></div>
-              <div><strong>Expected roles:</strong> {JSON.stringify(settingsItems[0]?.roles)}</div>
-            </div>
-            <div className="pt-2 pb-4 px-4 border-t border-red-300 space-y-2">
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full bg-blue-500 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-blue-600"
-              >
-                🔄 Recargar Página
-              </button>
-              <button
-                onClick={() => {
-                  localStorage.clear();
-                  sessionStorage.clear();
-                  window.location.reload();
-                }}
-                className="w-full bg-orange-500 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-orange-600"
-              >
-                🗑️ Limpiar Cache y Recargar
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-
       <div className="h-screen flex w-full bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 overflow-hidden">
         <Sidebar className="border-r border-slate-200/60 bg-white/80 backdrop-blur-sm flex flex-col h-full">
           <SidebarHeader className="border-b border-slate-200/60 p-6">
