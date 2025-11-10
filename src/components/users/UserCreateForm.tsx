@@ -186,7 +186,7 @@ export default function UserCreateForm({
       </DialogHeader>
 
       <form onSubmit={handleSubmit} className="space-y-6 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6">
           {/* Email - Full width */}
           <div className="space-y-2 lg:col-span-2">
             <Label htmlFor="email">
@@ -264,7 +264,7 @@ export default function UserCreateForm({
               placeholder="Juan"
               required
               disabled={isSubmitting}
-              className="h-12 px-4"
+              className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
               minLength={2}
             />
           </div>
@@ -282,7 +282,7 @@ export default function UserCreateForm({
               placeholder="García López"
               required
               disabled={isSubmitting}
-              className="h-12 px-4"
+              className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
               minLength={2}
             />
           </div>
@@ -298,7 +298,7 @@ export default function UserCreateForm({
               disabled={isSubmitting}
               required
             >
-              <SelectTrigger className="h-12 px-4">
+              <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
                 <SelectValue placeholder="Seleccionar rol..." />
               </SelectTrigger>
               <SelectContent>
@@ -324,7 +324,7 @@ export default function UserCreateForm({
               onChange={(e) => handleInputChange("phone", e.target.value)}
               placeholder="+34 600 000 000"
               disabled={isSubmitting}
-              className="h-12 px-4"
+              className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
             />
           </div>
 
@@ -459,7 +459,7 @@ export default function UserCreateForm({
             variant="outline"
             onClick={onCancel}
             disabled={isSubmitting}
-            className="h-12 px-8 text-base"
+            className="h-11 sm:h-12 px-6 sm:px-8 text-base"
           >
             <X className="w-4 h-4 mr-2" />
             Cancelar

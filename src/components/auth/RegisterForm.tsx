@@ -110,17 +110,17 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
-          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-red-800">{error}</p>
+          <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <p className="text-xs sm:text-sm text-red-800">{error}</p>
         </div>
       )}
 
       {/* Email */}
       <div className="space-y-2">
-        <Label htmlFor="email">
+        <Label htmlFor="email" className="text-sm sm:text-base">
           Correo Electrónico <span className="text-red-500">*</span>
         </Label>
         <Input
@@ -131,14 +131,14 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
           onChange={(e) => handleChange('email', e.target.value)}
           required
           disabled={loading}
-          className="h-12"
+          className="h-11 sm:h-12 text-sm sm:text-base"
         />
       </div>
 
       {/* Nombre */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="first_name">
+          <Label htmlFor="first_name" className="text-sm sm:text-base">
             Nombre <span className="text-red-500">*</span>
           </Label>
           <Input
@@ -149,12 +149,12 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
             onChange={(e) => handleChange('first_name', e.target.value)}
             required
             disabled={loading}
-            className="h-12"
+            className="h-11 sm:h-12 text-sm sm:text-base"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="last_name">
+          <Label htmlFor="last_name" className="text-sm sm:text-base">
             Apellidos <span className="text-red-500">*</span>
           </Label>
           <Input
@@ -165,14 +165,14 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
             onChange={(e) => handleChange('last_name', e.target.value)}
             required
             disabled={loading}
-            className="h-12"
+            className="h-11 sm:h-12 text-sm sm:text-base"
           />
         </div>
       </div>
 
       {/* Ciudad */}
       <div className="space-y-2">
-        <Label htmlFor="city_id">
+        <Label htmlFor="city_id" className="text-sm sm:text-base">
           Ciudad <span className="text-red-500">*</span>
         </Label>
         <Select
@@ -180,12 +180,12 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
           onValueChange={(value) => handleChange('city_id', value)}
           disabled={loading}
         >
-          <SelectTrigger className="h-12">
+          <SelectTrigger className="h-11 sm:h-12 text-sm sm:text-base">
             <SelectValue placeholder="Selecciona una ciudad" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-[60vh]">
             {cities.map((city) => (
-              <SelectItem key={city.id} value={city.id}>
+              <SelectItem key={city.id} value={city.id} className="text-sm sm:text-base">
                 {city.name}
               </SelectItem>
             ))}
@@ -195,7 +195,7 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
 
       {/* Teléfono */}
       <div className="space-y-2">
-        <Label htmlFor="phone">Teléfono</Label>
+        <Label htmlFor="phone" className="text-sm sm:text-base">Teléfono</Label>
         <Input
           id="phone"
           type="tel"
@@ -203,13 +203,13 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
           value={formData.phone}
           onChange={(e) => handleChange('phone', e.target.value)}
           disabled={loading}
-          className="h-12"
+          className="h-11 sm:h-12 text-sm sm:text-base"
         />
       </div>
 
       {/* Contraseña */}
       <div className="space-y-2">
-        <Label htmlFor="password">
+        <Label htmlFor="password" className="text-sm sm:text-base">
           Contraseña <span className="text-red-500">*</span>
         </Label>
         <div className="relative">
@@ -223,18 +223,18 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
             onBlur={() => setPasswordFocused(false)}
             required
             disabled={loading}
-            className="h-12 pr-10"
+            className="h-11 sm:h-12 pr-10 text-sm sm:text-base"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             tabIndex={-1}
           >
             {showPassword ? (
-              <EyeOff className="w-5 h-5" />
+              <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
             ) : (
-              <Eye className="w-5 h-5" />
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
           </button>
         </div>
@@ -250,9 +250,9 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
               return (
                 <div key={index} className="flex items-center gap-2 text-xs">
                   {isMet ? (
-                    <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
                   ) : (
-                    <X className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                    <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 flex-shrink-0" />
                   )}
                   <span className={isMet ? 'text-green-700' : 'text-slate-600'}>
                     {requirement.label}
@@ -266,7 +266,7 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
 
       {/* Confirmar Contraseña */}
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">
+        <Label htmlFor="confirmPassword" className="text-sm sm:text-base">
           Confirmar Contraseña <span className="text-red-500">*</span>
         </Label>
         <div className="relative">
@@ -278,7 +278,7 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
             onChange={(e) => handleChange('confirmPassword', e.target.value)}
             required
             disabled={loading}
-            className={`h-12 pr-10 ${
+            className={`h-11 sm:h-12 pr-10 text-sm sm:text-base ${
               formData.confirmPassword && !passwordsMatch
                 ? 'border-red-500 focus:ring-red-500'
                 : ''
@@ -287,13 +287,13 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             tabIndex={-1}
           >
             {showConfirmPassword ? (
-              <EyeOff className="w-5 h-5" />
+              <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
             ) : (
-              <Eye className="w-5 h-5" />
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
           </button>
         </div>
@@ -305,7 +305,7 @@ export default function RegisterForm({ cities, onSubmit, loading, error }: Regis
       {/* Botón Submit */}
       <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 h-12 text-base"
+        className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 h-11 sm:h-12 text-sm sm:text-base"
         disabled={loading || !isFormValid()}
       >
         {loading ? (

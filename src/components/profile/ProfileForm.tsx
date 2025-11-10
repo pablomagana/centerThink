@@ -98,55 +98,55 @@ export default function ProfileForm({ profile, cities, onSubmit }) {
       animate={{ opacity: 1, y: 0 }}
     >
       <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <User className="w-6 h-6 text-indigo-600" />
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b p-4 sm:p-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <User className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
             Información Personal
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CardContent className="p-4 sm:p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6">
               {/* First Name */}
               <div className="space-y-2">
-                <Label htmlFor="first_name">
+                <Label htmlFor="first_name" className="text-sm sm:text-base">
                   Nombre <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="first_name"
                   value={formData.first_name}
                   onChange={(e) => handleInputChange("first_name", e.target.value)}
-                  className={`h-12 px-4 ${errors.first_name ? "border-red-500" : ""}`}
+                  className={`h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base ${errors.first_name ? "border-red-500" : ""}`}
                 />
                 {errors.first_name && (
-                  <p className="text-sm text-red-600">{errors.first_name}</p>
+                  <p className="text-xs sm:text-sm text-red-600">{errors.first_name}</p>
                 )}
               </div>
 
               {/* Last Name */}
               <div className="space-y-2">
-                <Label htmlFor="last_name">
+                <Label htmlFor="last_name" className="text-sm sm:text-base">
                   Apellidos <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="last_name"
                   value={formData.last_name}
                   onChange={(e) => handleInputChange("last_name", e.target.value)}
-                  className={`h-12 px-4 ${errors.last_name ? "border-red-500" : ""}`}
+                  className={`h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base ${errors.last_name ? "border-red-500" : ""}`}
                 />
                 {errors.last_name && (
-                  <p className="text-sm text-red-600">{errors.last_name}</p>
+                  <p className="text-xs sm:text-sm text-red-600">{errors.last_name}</p>
                 )}
               </div>
 
               {/* Email (readonly) */}
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
                 <Input
                   id="email"
                   value={profile?.email || ""}
                   disabled
-                  className="h-12 px-4 bg-slate-100 text-slate-600 cursor-not-allowed"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base bg-slate-100 text-slate-600 cursor-not-allowed"
                 />
                 <p className="text-xs text-slate-500">
                   El email no se puede modificar
@@ -155,23 +155,23 @@ export default function ProfileForm({ profile, cities, onSubmit }) {
 
               {/* Phone */}
               <div className="space-y-2">
-                <Label htmlFor="phone">Teléfono</Label>
+                <Label htmlFor="phone" className="text-sm sm:text-base">Teléfono</Label>
                 <Input
                   id="phone"
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
                   placeholder="Ej: +52 55 1234 5678"
-                  className={`h-12 px-4 ${errors.phone ? "border-red-500" : ""}`}
+                  className={`h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base ${errors.phone ? "border-red-500" : ""}`}
                 />
                 {errors.phone && (
-                  <p className="text-sm text-red-600">{errors.phone}</p>
+                  <p className="text-xs sm:text-sm text-red-600">{errors.phone}</p>
                 )}
               </div>
 
               {/* Role (readonly) */}
               <div className="space-y-2">
-                <Label>Rol</Label>
-                <div className="flex items-center h-12">
+                <Label className="text-sm sm:text-base">Rol</Label>
+                <div className="flex items-center min-h-11 sm:min-h-12">
                   {getRoleBadge(profile?.role)}
                 </div>
                 <p className="text-xs text-slate-500">
@@ -181,8 +181,8 @@ export default function ProfileForm({ profile, cities, onSubmit }) {
 
               {/* Cities (readonly) */}
               <div className="space-y-2">
-                <Label>Ciudades Asignadas</Label>
-                <div className="flex items-center flex-wrap gap-2 min-h-12 py-2">
+                <Label className="text-sm sm:text-base">Ciudades Asignadas</Label>
+                <div className="flex items-center flex-wrap gap-2 min-h-11 sm:min-h-12 py-2">
                   {getUserCities()}
                 </div>
                 <p className="text-xs text-slate-500">
@@ -192,13 +192,13 @@ export default function ProfileForm({ profile, cities, onSubmit }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-end gap-4 pt-4 border-t">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4 border-t">
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleCancel}
                 disabled={!isEdited}
-                className="h-12 px-8 text-base"
+                className="w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base order-2 sm:order-1"
               >
                 <X className="w-4 h-4 mr-2" />
                 Cancelar
@@ -206,7 +206,7 @@ export default function ProfileForm({ profile, cities, onSubmit }) {
               <Button
                 type="submit"
                 disabled={!isEdited}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-12 px-8 text-base"
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base order-1 sm:order-2"
               >
                 <Save className="w-4 h-4 mr-2" />
                 Guardar Cambios

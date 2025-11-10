@@ -13,13 +13,31 @@ const SidebarProvider = ({ children, ...props }) => {
   )
 }
 
-const Sidebar = React.forwardRef(({ className, ...props }, ref) => (
-  <aside
-    ref={ref}
-    className={cn("w-64 shrink-0", className)}
-    {...props}
-  />
-))
+const useSidebar = () => {
+  const context = React.useContext(SidebarContext)
+  if (!context) {
+    throw new Error('useSidebar must be used within SidebarProvider')
+  }
+  return context
+}
+
+const Sidebar = React.forwardRef(({ className, ...props }, ref) => {
+  const { isOpen } = useSidebar()
+
+  return (
+    <aside
+      ref={ref}
+      className={cn(
+        "w-64 shrink-0 transition-transform duration-300 ease-in-out",
+        "md:translate-x-0", // Always visible on desktop
+        // Mobile: hidden by default, shown when isOpen
+        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 Sidebar.displayName = "Sidebar"
 
 const SidebarHeader = React.forwardRef(({ className, ...props }, ref) => (
@@ -149,4 +167,5 @@ export {
   SidebarFooter,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 }

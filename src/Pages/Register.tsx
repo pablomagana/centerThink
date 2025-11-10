@@ -66,33 +66,33 @@ export default function RegisterPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
               <img src="/favicon.svg" alt="CenterThink" className="w-16 h-16 rounded-2xl" />
             </div>
-            <h1 className="text-3xl font-bold text-slate-900">CenterThink</h1>
-            <p className="text-slate-600 mt-2">Gestión de Thinkglaos</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">CenterThink</h1>
+            <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">Gestión de Thinkglaos</p>
           </div>
 
           <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-            <CardHeader>
+            <CardHeader className="p-4 sm:p-6">
               <div className="flex justify-center mb-4">
                 <div className="rounded-full bg-green-100 p-3">
-                  <CheckCircle2 className="w-12 h-12 text-green-600" />
+                  <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
                 </div>
               </div>
-              <CardTitle className="text-2xl text-center">¡Registro Exitoso!</CardTitle>
-              <CardDescription className="text-center">
+              <CardTitle className="text-xl sm:text-2xl text-center">¡Registro Exitoso!</CardTitle>
+              <CardDescription className="text-sm sm:text-base text-center">
                 Tu cuenta ha sido creada correctamente
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-900 text-center">
+            <CardContent className="space-y-4 p-4 sm:p-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-blue-900 text-center">
                   <strong>Revisa tu correo electrónico</strong>
                 </p>
-                <p className="text-sm text-blue-800 text-center mt-2">
+                <p className="text-xs sm:text-sm text-blue-800 text-center mt-2">
                   Hemos enviado un email de confirmación. Debes confirmar tu cuenta antes de poder iniciar sesión.
                 </p>
               </div>
 
-              <div className="text-center text-sm text-slate-600">
+              <div className="text-center text-xs sm:text-sm text-slate-600">
                 <p>Serás redirigido al login en 3 segundos...</p>
                 <Link
                   to="/login"
@@ -121,13 +121,13 @@ export default function RegisterPage() {
         </div>
 
         <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl">Crear Cuenta</CardTitle>
-            <CardDescription>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-xl sm:text-2xl">Crear Cuenta</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
               Completa el formulario para registrarte en el sistema
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             <RegisterForm
               cities={cities}
               onSubmit={handleRegister}
@@ -139,15 +139,15 @@ export default function RegisterPage() {
               <div className="text-center">
                 <Link
                   to="/login"
-                  className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline"
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm text-blue-600 hover:underline"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                   ¿Ya tienes cuenta? Inicia sesión
                 </Link>
               </div>
 
               <div className="text-center">
-                <p className="text-sm text-slate-600">
+                <p className="text-xs sm:text-sm text-slate-600">
                   ¿Necesitas ayuda?{' '}
                   <a href="mailto:info@pablomagana.es" className="text-blue-600 hover:underline">
                     Contacta soporte

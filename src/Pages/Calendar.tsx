@@ -60,28 +60,28 @@ export default function CalendarPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Calendario del Curso</h1>
-        <p className="text-slate-600 mt-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Calendario del Curso</h1>
+        <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">
           Vista anual de todos los Thinkglaos programados de Septiembre a Junio.
         </p>
       </div>
-      
+
       <div className="bg-white/80 backdrop-blur-sm shadow-lg rounded-xl border border-slate-200/80 p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={prevYear}>
+            <Button variant="outline" size="icon" onClick={prevYear} className="h-10 w-10 sm:h-11 sm:w-11">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <h2 className="text-xl sm:text-2xl font-semibold text-slate-800 w-48 text-center">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-800 w-44 sm:w-48 text-center">
               Curso {academicYear}-{academicYear + 1}
             </h2>
-            <Button variant="outline" size="icon" onClick={nextYear}>
+            <Button variant="outline" size="icon" onClick={nextYear} className="h-10 w-10 sm:h-11 sm:w-11">
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
-          <Button variant="outline" onClick={goToCurrentAcademicYear} className="mt-4 sm:mt-0">
+          <Button variant="outline" onClick={goToCurrentAcademicYear} className="w-full sm:w-auto h-10 sm:h-11 text-sm sm:text-base">
             Curso Actual
           </Button>
         </div>

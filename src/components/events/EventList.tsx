@@ -79,7 +79,7 @@ export default function EventsList({
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       {events.map((event, index) => {
         const speaker = getSpeaker(event.speaker_id);
         const venue = getVenue(event.venue_id);
@@ -88,7 +88,7 @@ export default function EventsList({
         const StatusIcon = status?.icon || AlertCircle;
         const preparationProgress = getPreparationProgress(event.preparations);
 
-        const eventTitle = speaker 
+        const eventTitle = speaker
           ? `${speaker.name} - ${format(new Date(event.date), "MMMM yyyy", { locale: es })}`
           : format(new Date(event.date), "PPP", { locale: es });
 
@@ -100,7 +100,7 @@ export default function EventsList({
             transition={{ delay: index * 0.1 }}
           >
             <Card className="h-full shadow-lg border-0 bg-white/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-3 sm:pb-4 p-4 sm:p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div 
@@ -109,10 +109,10 @@ export default function EventsList({
                       <Zap className="w-5 h-5" />
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-bold text-slate-900 truncate text-lg capitalize">
+                      <h3 className="font-bold text-slate-900 truncate text-base sm:text-lg capitalize">
                         {eventTitle}
                       </h3>
-                       <p className="text-sm text-blue-600 font-semibold">
+                       <p className="text-xs sm:text-sm text-blue-600 font-semibold">
                         Thinkglao
                       </p>
                     </div>
@@ -121,61 +121,61 @@ export default function EventsList({
                     variant="ghost"
                     size="icon"
                     onClick={() => onEdit(event)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0"
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2">
-                  <Badge className={status?.color}>
+                <div className="flex flex-wrap items-center gap-2 pt-2">
+                  <Badge className={`${status?.color} text-xs sm:text-sm`}>
                     <StatusIcon className="w-3 h-3 mr-1" />
                     {status?.label}
                   </Badge>
                   {preparationProgress > 0 && (
-                    <Badge variant="outline" className="text-emerald-600">
+                    <Badge variant="outline" className="text-emerald-600 text-xs sm:text-sm">
                       {preparationProgress}% preparado
                     </Badge>
                   )}
                 </div>
               </CardHeader>
 
-              <CardContent className="space-y-4 flex-1 flex flex-col justify-between">
-                <div>
+              <CardContent className="space-y-3 sm:space-y-4 flex-1 flex flex-col justify-between p-4 sm:p-6">
+                <div className="space-y-2">
                   <div className="flex items-center gap-2 text-slate-600">
-                    <Calendar className="w-4 h-4 text-blue-500" />
-                    <span className="text-sm font-medium">
+                    <Calendar className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium">
                       {format(new Date(event.date), "PPP 'a las' HH:mm", { locale: es })}
                     </span>
                   </div>
 
                   {city && (
                     <div className="flex items-center gap-2 text-slate-600">
-                      <MapPin className="w-4 h-4 text-emerald-500" />
-                      <span className="text-sm">{city.name}, {city.country}</span>
+                      <MapPin className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">{city.name}, {city.country}</span>
                     </div>
                   )}
 
                   {speaker && (
                     <div className="flex items-center gap-2 text-slate-600">
-                      <User className="w-4 h-4 text-purple-500" />
-                      <span className="text-sm">{speaker.name}</span>
+                      <User className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">{speaker.name}</span>
                     </div>
                   )}
 
                   {venue && (
                     <div className="flex items-center gap-2 text-slate-600">
-                      <Building2 className="w-4 h-4 text-orange-500" />
-                      <span className="text-sm truncate">{venue.name}</span>
+                      <Building2 className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">{venue.name}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 mt-auto">
+                <div className="pt-3 sm:pt-4 border-t border-slate-100 mt-auto">
                     <Link to={`/events/${event.id}`}>
-                      <Button variant="outline" className="w-full">
+                      <Button variant="outline" className="w-full h-10 sm:h-11 text-xs sm:text-sm">
                         Ver Detalles y Voluntarios
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                        <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2" />
                       </Button>
                     </Link>
                 </div>

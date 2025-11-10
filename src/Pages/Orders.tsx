@@ -175,59 +175,59 @@ export default function OrdersPage() {
       <AsanaLinksSection />
 
       {/* Header with New Request Button */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Solicitudes de Gastos</h1>
-          <p className="text-slate-600 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Solicitudes de Gastos</h1>
+          <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">
             Gestiona todas las solicitudes de gastos y materiales para eventos
           </p>
         </div>
         <Button
           onClick={handleNewRequest}
-          className="bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 shadow-lg h-12 px-8 text-base"
+          className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 shadow-lg h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5 mr-2" />
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
           Nueva Solicitud
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4 sm:p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Status Filter */}
           <div className="space-y-2">
-            <Label>Estado</Label>
+            <Label className="text-sm sm:text-base">Estado</Label>
             <Select
               value={filters.status}
               onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
             >
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-11 sm:h-12 text-sm sm:text-base">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los estados</SelectItem>
-                <SelectItem value="pendiente">Pendiente</SelectItem>
-                <SelectItem value="en_proceso">En Proceso</SelectItem>
-                <SelectItem value="completado">Completado</SelectItem>
-                <SelectItem value="cancelado">Cancelado</SelectItem>
+              <SelectContent className="max-h-[60vh]">
+                <SelectItem value="all" className="text-sm sm:text-base">Todos los estados</SelectItem>
+                <SelectItem value="pendiente" className="text-sm sm:text-base">Pendiente</SelectItem>
+                <SelectItem value="en_proceso" className="text-sm sm:text-base">En Proceso</SelectItem>
+                <SelectItem value="completado" className="text-sm sm:text-base">Completado</SelectItem>
+                <SelectItem value="cancelado" className="text-sm sm:text-base">Cancelado</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Request Type Filter */}
           <div className="space-y-2">
-            <Label>Tipo de Solicitud</Label>
+            <Label className="text-sm sm:text-base">Tipo de Solicitud</Label>
             <Select
               value={filters.requestType}
               onValueChange={(value) => setFilters(prev => ({ ...prev, requestType: value }))}
             >
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-11 sm:h-12 text-sm sm:text-base">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los tipos</SelectItem>
+              <SelectContent className="max-h-[60vh]">
+                <SelectItem value="all" className="text-sm sm:text-base">Todos los tipos</SelectItem>
                 {Object.entries(REQUEST_TYPE_LABELS).map(([key, label]) => (
-                  <SelectItem key={key} value={key}>
+                  <SelectItem key={key} value={key} className="text-sm sm:text-base">
                     {label}
                   </SelectItem>
                 ))}
@@ -237,18 +237,18 @@ export default function OrdersPage() {
 
           {/* City Filter */}
           <div className="space-y-2">
-            <Label>Ciudad</Label>
+            <Label className="text-sm sm:text-base">Ciudad</Label>
             <Select
               value={filters.cityId}
               onValueChange={(value) => setFilters(prev => ({ ...prev, cityId: value }))}
             >
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-11 sm:h-12 text-sm sm:text-base">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas las ciudades</SelectItem>
+              <SelectContent className="max-h-[60vh]">
+                <SelectItem value="all" className="text-sm sm:text-base">Todas las ciudades</SelectItem>
                 {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id}>
+                  <SelectItem key={city.id} value={city.id} className="text-sm sm:text-base">
                     {city.name}
                   </SelectItem>
                 ))}
@@ -258,18 +258,18 @@ export default function OrdersPage() {
 
           {/* Creator Name Filter */}
           <div className="space-y-2">
-            <Label>Creador</Label>
+            <Label className="text-sm sm:text-base">Creador</Label>
             <Input
               placeholder="Buscar por nombre..."
               value={filters.creatorName}
               onChange={(e) => setFilters(prev => ({ ...prev, creatorName: e.target.value }))}
-              className="h-11"
+              className="h-11 sm:h-12 text-sm sm:text-base"
             />
           </div>
         </div>
 
         {/* Results Count */}
-        <div className="mt-4 text-sm text-gray-600">
+        <div className="mt-4 text-xs sm:text-sm text-gray-600">
           Mostrando {filteredRequests.length} de {requests.length} solicitudes
         </div>
       </div>

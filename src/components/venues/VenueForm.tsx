@@ -41,15 +41,15 @@ export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
       className="mb-8"
     >
       <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-        <CardHeader className="bg-gradient-to-r from-orange-50 to-amber-50 border-b">
+        <CardHeader className="p-4 sm:p-6 bg-gradient-to-r from-orange-50 to-amber-50 border-b">
           <CardTitle className="flex items-center gap-2 text-xl">
             <Building2 className="w-6 h-6 text-orange-600" />
             {venue ? "Editar Local" : "Nuevo Local"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CardContent className="p-4 sm:p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name">Nombre del Local *</Label>
                 <Input
@@ -69,7 +69,7 @@ export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
                   onValueChange={(value) => handleInputChange("city_id", value)}
                   required
                 >
-                  <SelectTrigger className="h-12 px-4">
+                  <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
                     <SelectValue placeholder="Seleccionar ciudad" />
                   </SelectTrigger>
                   <SelectContent>
@@ -90,7 +90,7 @@ export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
                   onChange={(e) => handleInputChange("address", e.target.value)}
                   placeholder="Calle Falsa 123, 28080 Madrid"
                   required
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
 
@@ -102,7 +102,7 @@ export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
                   value={formData.capacity}
                   onChange={(e) => handleInputChange("capacity", e.target.value)}
                   placeholder="Ej: 250"
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
                   id="contact_name"
                   value={formData.contact_name}
                   onChange={(e) => handleInputChange("contact_name", e.target.value)}
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
               <div className="space-y-2">
@@ -127,7 +127,7 @@ export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
                   id="contact_phone"
                   value={formData.contact_phone}
                   onChange={(e) => handleInputChange("contact_phone", e.target.value)}
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
               <div className="space-y-2">
@@ -137,7 +137,7 @@ export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
                   type="email"
                   value={formData.contact_email}
                   onChange={(e) => handleInputChange("contact_email", e.target.value)}
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -165,7 +165,7 @@ export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
             </div>
 
             <div className="flex justify-end gap-4 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={onCancel} className="h-12 px-8 text-base">
+              <Button type="button" variant="outline" onClick={onCancel} className="h-11 sm:h-12 px-6 sm:px-8 text-base">
                 <X className="w-4 h-4 mr-2" />
                 Cancelar
               </Button>

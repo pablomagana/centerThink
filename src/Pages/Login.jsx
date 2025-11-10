@@ -40,28 +40,28 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
             <img src="/favicon.svg" alt="CenterThink" className="w-16 h-16 rounded-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900">CenterThink</h1>
-          <p className="text-slate-600 mt-2">Gestión de Thinkglaos</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">CenterThink</h1>
+          <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">Gestión de Thinkglaos</p>
         </div>
 
         <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl">Iniciar Sesión</CardTitle>
-            <CardDescription>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-xl sm:text-2xl">Iniciar Sesión</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
               Ingresa tus credenciales para acceder al sistema
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <CardContent className="p-4 sm:p-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-800">{error}</p>
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs sm:text-sm text-red-800">{error}</p>
                 </div>
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email">Correo Electrónico</Label>
+                <Label htmlFor="email" className="text-sm sm:text-base">Correo Electrónico</Label>
                 <Input
                   id="email"
                   type="email"
@@ -70,12 +70,12 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={loading}
-                  className="h-12"
+                  className="h-11 sm:h-12 text-sm sm:text-base"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Contraseña</Label>
+                <Label htmlFor="password" className="text-sm sm:text-base">Contraseña</Label>
                 <Input
                   id="password"
                   type="password"
@@ -84,7 +84,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={loading}
-                  className="h-12"
+                  className="h-11 sm:h-12 text-sm sm:text-base"
                 />
               </div>
 
@@ -99,7 +99,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 h-12 text-base"
+                className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 h-11 sm:h-12 text-sm sm:text-base"
                 disabled={loading}
               >
                 {loading ? (
@@ -117,14 +117,14 @@ export default function LoginPage() {
               <div className="text-center">
                 <Link
                   to="/register"
-                  className="text-sm text-blue-600 hover:underline font-medium"
+                  className="text-xs sm:text-sm text-blue-600 hover:underline font-medium"
                 >
                   ¿No tienes cuenta? Regístrate aquí
                 </Link>
               </div>
 
               <div className="text-center">
-                <p className="text-sm text-slate-600">
+                <p className="text-xs sm:text-sm text-slate-600">
                   ¿Necesitas ayuda?{' '}
                   <a href="mailto:info@pablomagana.es" className="text-blue-600 hover:underline">
                     Contacta soporte

@@ -26,6 +26,7 @@ import {
   SidebarFooter,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -91,6 +92,7 @@ function MainLayout({ children, currentPageName }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { isOpen, setIsOpen } = useSidebar();
   const {
     currentUser,
     userCities,
@@ -138,13 +140,15 @@ function MainLayout({ children, currentPageName }) {
   console.log('===================');
 
   const CitySelector = ({ inHeader = false }) => {
-    if (appIsLoading || !userCities.length) return <div className="h-12 w-[220px] bg-slate-200 rounded-lg animate-pulse" />;
-    
+    if (appIsLoading || !userCities.length) {
+      return <div className={`${inHeader ? 'h-9 w-[120px]' : 'h-12 w-[220px]'} bg-slate-200 rounded-lg animate-pulse`} />;
+    }
+
     if (userCities.length === 1) {
       return (
-        <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-50 rounded-lg h-12">
+        <div className={`flex items-center gap-2 px-3 bg-emerald-50 rounded-lg ${inHeader ? 'py-1.5 h-9' : 'py-2.5 h-12'}`}>
           <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-          <span className="text-sm font-medium text-emerald-700">
+          <span className={`font-medium text-emerald-700 truncate ${inHeader ? 'text-xs' : 'text-sm'}`}>
             {userCities[0].name}
           </span>
         </div>
@@ -152,12 +156,15 @@ function MainLayout({ children, currentPageName }) {
     }
 
     const TriggerButton = (
-       <Button variant={inHeader ? "outline" : "ghost"} className="justify-between w-full h-12 px-4 text-base">
-          <div className="flex items-center gap-3">
-            <MapPin className="w-5 h-5 text-emerald-600" />
-            <span className="truncate">{selectedCity?.name || "Seleccionar ciudad"}</span>
+       <Button
+         variant={inHeader ? "outline" : "ghost"}
+         className={`justify-between w-full px-3 ${inHeader ? 'h-9 text-sm' : 'h-12 px-4 text-base'}`}
+       >
+          <div className="flex items-center gap-2">
+            <MapPin className={`text-emerald-600 flex-shrink-0 ${inHeader ? 'w-4 h-4' : 'w-5 h-5'}`} />
+            <span className="truncate max-w-[80px] sm:max-w-none">{selectedCity?.name || "Ciudad"}</span>
           </div>
-          <ChevronDown className="w-5 h-5 ml-2 text-slate-500 flex-shrink-0" />
+          <ChevronDown className={`ml-1 text-slate-500 flex-shrink-0 ${inHeader ? 'w-3.5 h-3.5' : 'w-5 h-5 ml-2'}`} />
         </Button>
     );
 
@@ -166,20 +173,20 @@ function MainLayout({ children, currentPageName }) {
         <DropdownMenuTrigger asChild>
           {TriggerButton}
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="min-w-[220px]">
-          <DropdownMenuLabel>Selecciona una ciudad</DropdownMenuLabel>
+        <DropdownMenuContent className="min-w-[180px] sm:min-w-[220px]" align={inHeader ? "end" : "start"}>
+          <DropdownMenuLabel className="text-xs sm:text-sm">Selecciona una ciudad</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {userCities.map((city) => (
-            <DropdownMenuItem 
+            <DropdownMenuItem
               key={city.id}
               onClick={() => setSelectedCity(city)}
-              className="cursor-pointer py-3 px-3 text-base"
+              className="cursor-pointer py-2.5 px-3 text-sm sm:text-base"
             >
-              <div className="flex items-center gap-3">
-                <div className={`w-2.5 h-2.5 rounded-full ${
+              <div className="flex items-center gap-2.5">
+                <div className={`w-2 h-2 rounded-full ${
                   selectedCity?.id === city.id ? 'bg-emerald-500' : 'bg-gray-300'
                 }`}></div>
-                {city.name}
+                <span className="truncate">{city.name}</span>
               </div>
             </DropdownMenuItem>
           ))}
@@ -188,10 +195,28 @@ function MainLayout({ children, currentPageName }) {
     );
   };
 
+  // Close sidebar when clicking on a navigation link (mobile only)
+  const handleNavClick = () => {
+    // Only close on mobile (< 768px)
+    if (window.innerWidth < 768) {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <SidebarProvider>
-      <div className="h-screen flex w-full bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 overflow-hidden">
-        <Sidebar className="border-r border-slate-200/60 bg-white/80 backdrop-blur-sm flex flex-col h-full">
+      <div className="h-screen flex w-full bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 overflow-hidden relative">
+        {/* Backdrop overlay for mobile when sidebar is open */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-300"
+            onClick={() => setIsOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Sidebar - fixed position on mobile, relative on desktop */}
+        <Sidebar className="border-r border-slate-200/60 bg-white/80 backdrop-blur-sm flex flex-col h-full fixed md:relative z-50">
           <SidebarHeader className="border-b border-slate-200/60 p-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 flex items-center justify-center">
@@ -215,6 +240,7 @@ function MainLayout({ children, currentPageName }) {
                     <SidebarMenuItem key={item.title}>
                       <Link
                         to={item.url}
+                        onClick={handleNavClick}
                         className={`flex items-center gap-4 px-4 py-2.5 w-full rounded-lg transition-colors duration-200 ${
                           location.pathname === item.url
                             ? 'bg-emerald-50 text-slate-900'
@@ -241,6 +267,7 @@ function MainLayout({ children, currentPageName }) {
                       <SidebarMenuItem key={item.title}>
                         <Link
                           to={item.url}
+                          onClick={handleNavClick}
                           className={`flex items-center gap-4 px-4 py-2.5 w-full rounded-lg transition-colors duration-200 ${
                             location.pathname === item.url
                               ? 'bg-emerald-50 text-slate-900'
@@ -306,23 +333,28 @@ function MainLayout({ children, currentPageName }) {
         </Sidebar>
 
         <main className="flex-1 flex flex-col h-full overflow-hidden">
-          {/* <header className="bg-white/90 backdrop-blur-sm border-b border-slate-200/60 px-6 py-4 md:px-8 h-24 flex items-center flex-shrink-0">
+          {/* Mobile Header - visible only on mobile */}
+          <header className="md:hidden bg-white/90 backdrop-blur-sm border-b border-slate-200/60 px-4 py-3 flex items-center flex-shrink-0 sticky top-0 z-30">
             <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-4">
-                <SidebarTrigger className="md:hidden hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200" />
+              <div className="flex items-center gap-3">
+                <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200" />
                 <div>
-                  <h1 className="text-2xl font-bold text-slate-900">{currentPageName}</h1>
+                  <h1 className="text-lg font-bold text-slate-900 truncate">{currentPageName}</h1>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-4 md:hidden">
-                <CitySelector inHeader={true} />
+
+              <div className="flex items-center gap-2">
+                {userCities.length > 1 && (
+                  <div className="max-w-[140px]">
+                    <CitySelector inHeader={true} />
+                  </div>
+                )}
               </div>
             </div>
-          </header> */}
+          </header>
 
           <div className="flex-1 overflow-auto">
-            <div className="max-w-7xl mx-auto p-6 md:p-8">
+            <div className="max-w-7xl mx-auto p-4 sm:p-6 md:p-8">
               {children}
             </div>
           </div>

@@ -53,15 +53,15 @@ export default function UserForm({ user, cities, onSubmit, onCancel }) {
       className="mb-8"
     >
       <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <Users className="w-6 h-6 text-indigo-600" />
+        <CardHeader className="p-4 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-b p-4 sm:p-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
             Editar Usuario
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CardContent className="p-4 sm:p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6">
               <div className="space-y-2">
                 <Label htmlFor="first_name">Nombre *</Label>
                 <Input
@@ -69,7 +69,7 @@ export default function UserForm({ user, cities, onSubmit, onCancel }) {
                   value={formData.first_name}
                   onChange={(e) => handleInputChange("first_name", e.target.value)}
                   required
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
 
@@ -80,7 +80,7 @@ export default function UserForm({ user, cities, onSubmit, onCancel }) {
                   value={formData.last_name}
                   onChange={(e) => handleInputChange("last_name", e.target.value)}
                   required
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
 
@@ -100,7 +100,7 @@ export default function UserForm({ user, cities, onSubmit, onCancel }) {
                   id="phone"
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
 
@@ -148,7 +148,7 @@ export default function UserForm({ user, cities, onSubmit, onCancel }) {
             </div>
 
             <div className="flex justify-end gap-4 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={onCancel} className="h-12 px-8 text-base">
+              <Button type="button" variant="outline" onClick={onCancel} className="h-11 sm:h-12 px-6 sm:px-8 text-base">
                 <X className="w-4 h-4 mr-2" />
                 Cancelar
               </Button>

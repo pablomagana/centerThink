@@ -72,19 +72,19 @@ export default function VenuesPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Gestión de Locales</h1>
-          <p className="text-slate-600 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Gestión de Locales</h1>
+          <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">
             Administra la base de datos de locales para tus eventos
           </p>
         </div>
         <Button 
           onClick={() => setShowForm(!showForm)}
-          className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg h-12 px-8 text-base"
+          className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5 mr-2" />
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
           Nuevo Local
         </Button>
       </div>

@@ -31,15 +31,15 @@ export default function CityForm({ city, onSubmit, onCancel }) {
       className="mb-8"
     >
       <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-        <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
+        <CardHeader className="p-4 sm:p-6 bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
           <CardTitle className="flex items-center gap-2 text-xl">
             <MapPin className="w-6 h-6 text-emerald-600" />
             {city ? "Editar Ciudad" : "Nueva Ciudad"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CardContent className="p-4 sm:p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name">Nombre de la Ciudad *</Label>
                 <Input
@@ -60,7 +60,7 @@ export default function CityForm({ city, onSubmit, onCancel }) {
                   onChange={(e) => handleInputChange("country", e.target.value)}
                   placeholder="España"
                   required
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
 
@@ -71,7 +71,7 @@ export default function CityForm({ city, onSubmit, onCancel }) {
                   value={formData.region}
                   onChange={(e) => handleInputChange("region", e.target.value)}
                   placeholder="Comunidad de Madrid"
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -88,7 +88,7 @@ export default function CityForm({ city, onSubmit, onCancel }) {
             </div>
 
             <div className="flex justify-end gap-4 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={onCancel} className="h-12 px-8 text-base">
+              <Button type="button" variant="outline" onClick={onCancel} className="h-11 sm:h-12 px-6 sm:px-8 text-base">
                 <X className="w-4 h-4 mr-2" />
                 Cancelar
               </Button>

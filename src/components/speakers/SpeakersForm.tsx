@@ -42,15 +42,15 @@ export default function SpeakerForm({ speaker, onSubmit, onCancel }) {
       className="mb-8"
     >
       <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-        <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+        <CardHeader className="p-4 sm:p-6 bg-gradient-to-r from-purple-50 to-pink-50 border-b">
           <CardTitle className="flex items-center gap-2 text-xl">
             <Mic className="w-6 h-6 text-purple-600" />
             {speaker ? "Editar Ponente" : "Nuevo Ponente"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CardContent className="p-4 sm:p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name">Nombre Completo *</Label>
                 <Input
@@ -72,7 +72,7 @@ export default function SpeakerForm({ speaker, onSubmit, onCancel }) {
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   placeholder="email@ejemplo.com"
                   required
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
 
@@ -83,7 +83,7 @@ export default function SpeakerForm({ speaker, onSubmit, onCancel }) {
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
                   placeholder="+34 600 000 000"
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
 
@@ -94,7 +94,7 @@ export default function SpeakerForm({ speaker, onSubmit, onCancel }) {
                   value={formData.instagram}
                   onChange={(e) => handleInputChange("instagram", e.target.value)}
                   placeholder="@usuario"
-                  className="h-12 px-4"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -110,7 +110,7 @@ export default function SpeakerForm({ speaker, onSubmit, onCancel }) {
                   value={formData.contact_status}
                   onValueChange={(value) => handleInputChange("contact_status", value)}
                 >
-                  <SelectTrigger className="h-12 px-4">
+                  <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
                     <SelectValue placeholder="Seleccionar estado" />
                   </SelectTrigger>
                   <SelectContent>
@@ -127,7 +127,7 @@ export default function SpeakerForm({ speaker, onSubmit, onCancel }) {
                   value={formData.proposal_status}
                   onValueChange={(value) => handleInputChange("proposal_status", value)}
                 >
-                  <SelectTrigger className="h-12 px-4">
+                  <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
                     <SelectValue placeholder="Seleccionar estado" />
                   </SelectTrigger>
                   <SelectContent>
@@ -190,7 +190,7 @@ export default function SpeakerForm({ speaker, onSubmit, onCancel }) {
             </div>
 
             <div className="flex justify-end gap-4 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={onCancel} className="h-12 px-8 text-base">
+              <Button type="button" variant="outline" onClick={onCancel} className="h-11 sm:h-12 px-6 sm:px-8 text-base">
                 <X className="w-4 h-4 mr-2" />
                 Cancelar
               </Button>

@@ -178,34 +178,89 @@ export default function EventDetailsPage() {
     ];
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-slate-900">{eventTitle}</h1>
-                <p className="text-slate-600 mt-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{eventTitle}</h1>
+                <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">
                     Detalles del evento y coordinación de voluntarios.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-8">
+            <div className="grid grid-cols-1 gap-6 sm:gap-8">
+                <div className="space-y-6 sm:space-y-8">
                     <Card>
-                        <CardHeader><CardTitle className="flex items-center gap-2"><Info className="w-5 h-5 text-blue-600"/>Información General</CardTitle></CardHeader>
-                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                            <div className="flex items-start gap-3"><Calendar className="w-4 h-4 mt-1 text-slate-500"/><div><p className="font-semibold text-slate-800">Fecha y Hora</p><p>{format(new Date(event.date), "eeee, dd MMMM yyyy 'a las' HH:mm", { locale: es })}</p></div></div>
-                            <div className="flex items-start gap-3"><MapPinIcon className="w-4 h-4 mt-1 text-slate-500"/><div><p className="font-semibold text-slate-800">Ciudad</p><p>{relatedData.city?.name || 'N/A'}</p></div></div>
-                            {relatedData.speaker && <div className="flex items-start gap-3"><Mic className="w-4 h-4 mt-1 text-slate-500"/><div><p className="font-semibold text-slate-800">Ponente</p><p>{relatedData.speaker.name}</p></div></div>}
-                            {relatedData.venue && <div className="flex items-start gap-3"><Building2 className="w-4 h-4 mt-1 text-slate-500"/><div><p className="font-semibold text-slate-800">Local</p><p>{relatedData.venue.name}</p></div></div>}
-                            <div className="flex items-start gap-3"><Users className="w-4 h-4 mt-1 text-slate-500"/><div><p className="font-semibold text-slate-800">Máx. Asistentes</p><p>{event.max_attendees || 'Sin límite'}</p></div></div>
-                            <div className="flex items-start gap-3"><ListChecks className="w-4 h-4 mt-1 text-slate-500"/><div><p className="font-semibold text-slate-800">Estado</p><p className="capitalize">{event.status}</p></div></div>
-                            {event.description && <div className="md:col-span-2 flex items-start gap-3"><p className="font-semibold text-slate-800">Descripción:</p><p className="text-slate-600">{event.description}</p></div>}
+                        <CardHeader className="p-4 sm:p-6">
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                                <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"/>
+                                Información General
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-1 gap-4 sm:gap-6 text-xs sm:text-sm p-4 sm:p-6">
+                            <div className="flex items-start gap-2 sm:gap-3">
+                                <Calendar className="w-4 h-4 mt-1 text-slate-500 flex-shrink-0"/>
+                                <div>
+                                    <p className="font-semibold text-slate-800">Fecha y Hora</p>
+                                    <p className="text-slate-600">{format(new Date(event.date), "eeee, dd MMMM yyyy 'a las' HH:mm", { locale: es })}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-2 sm:gap-3">
+                                <MapPinIcon className="w-4 h-4 mt-1 text-slate-500 flex-shrink-0"/>
+                                <div>
+                                    <p className="font-semibold text-slate-800">Ciudad</p>
+                                    <p className="text-slate-600">{relatedData.city?.name || 'N/A'}</p>
+                                </div>
+                            </div>
+                            {relatedData.speaker && (
+                                <div className="flex items-start gap-2 sm:gap-3">
+                                    <Mic className="w-4 h-4 mt-1 text-slate-500 flex-shrink-0"/>
+                                    <div>
+                                        <p className="font-semibold text-slate-800">Ponente</p>
+                                        <p className="text-slate-600">{relatedData.speaker.name}</p>
+                                    </div>
+                                </div>
+                            )}
+                            {relatedData.venue && (
+                                <div className="flex items-start gap-2 sm:gap-3">
+                                    <Building2 className="w-4 h-4 mt-1 text-slate-500 flex-shrink-0"/>
+                                    <div>
+                                        <p className="font-semibold text-slate-800">Local</p>
+                                        <p className="text-slate-600">{relatedData.venue.name}</p>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="flex items-start gap-2 sm:gap-3">
+                                <Users className="w-4 h-4 mt-1 text-slate-500 flex-shrink-0"/>
+                                <div>
+                                    <p className="font-semibold text-slate-800">Máx. Asistentes</p>
+                                    <p className="text-slate-600">{event.max_attendees || 'Sin límite'}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-2 sm:gap-3">
+                                <ListChecks className="w-4 h-4 mt-1 text-slate-500 flex-shrink-0"/>
+                                <div>
+                                    <p className="font-semibold text-slate-800">Estado</p>
+                                    <p className="text-slate-600 capitalize">{event.status}</p>
+                                </div>
+                            </div>
+                            {event.description && (
+                                <div className="flex items-start gap-2 sm:gap-3">
+                                    <div className="w-full">
+                                        <p className="font-semibold text-slate-800 mb-1">Descripción:</p>
+                                        <p className="text-slate-600">{event.description}</p>
+                                    </div>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><ListChecks className="w-5 h-5 text-blue-600"/>Estado de Preparativos</CardTitle>
+                        <CardHeader className="p-4 sm:p-6">
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                                <ListChecks className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"/>
+                                Estado de Preparativos
+                            </CardTitle>
                         </CardHeader>
-                        <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <CardContent className="grid grid-cols-2 gap-3 sm:gap-4 p-4 sm:p-6">
                             {preparationItems.map(item => {
                                 const statusKey = event.preparations?.[item.key] || 'pendiente';
                                 const config = preparationStatusConfig[statusKey];
@@ -213,17 +268,17 @@ export default function EventDetailsPage() {
                                 const ItemIcon = item.icon;
 
                                 return (
-                                    <div key={item.key} className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-lg border hover:shadow-md transition-shadow">
-                                        <ItemIcon className="w-7 h-7 text-slate-500 mb-2"/>
-                                        <p className="text-sm font-semibold text-slate-800 text-center mb-3">{item.label}</p>
+                                    <div key={item.key} className="flex flex-col items-center justify-center p-3 sm:p-4 bg-slate-50 rounded-lg border hover:shadow-md transition-shadow">
+                                        <ItemIcon className="w-6 h-6 sm:w-7 sm:h-7 text-slate-500 mb-2"/>
+                                        <p className="text-xs sm:text-sm font-semibold text-slate-800 text-center mb-2 sm:mb-3">{item.label}</p>
                                         <Select
                                             value={statusKey}
                                             onValueChange={(newStatus) => handlePreparationStatusChange(item.key, newStatus)}
                                         >
-                                            <SelectTrigger className={`w-full h-auto ${config.color} border-0 font-medium`}>
+                                            <SelectTrigger className={`w-full h-auto ${config.color} border-0 font-medium text-xs sm:text-sm`}>
                                                 <SelectValue>
-                                                    <div className="flex items-center justify-center gap-1.5">
-                                                        <Icon className="w-3.5 h-3.5" />
+                                                    <div className="flex items-center justify-center gap-1 sm:gap-1.5">
+                                                        <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
                                                         <span className="text-xs">{config.label}</span>
                                                     </div>
                                                 </SelectValue>
@@ -232,7 +287,7 @@ export default function EventDetailsPage() {
                                                 {Object.entries(preparationStatusConfig).map(([key, value]) => {
                                                     const StatusIcon = value.icon;
                                                     return (
-                                                        <SelectItem key={key} value={key}>
+                                                        <SelectItem key={key} value={key} className="text-xs sm:text-sm">
                                                             <div className="flex items-center gap-2">
                                                                 <StatusIcon className="w-4 h-4" />
                                                                 <span>{value.label}</span>
@@ -248,63 +303,86 @@ export default function EventDetailsPage() {
                         </CardContent>
                     </Card>
                 </div>
-                <div className="space-y-6">
-                    <Card>
-                        <CardHeader><CardTitle className="flex items-center gap-2"><UserCheck className="w-5 h-5 text-emerald-600"/>Voluntarios Confirmados ({relatedData.volunteers.length})</CardTitle></CardHeader>
-                        <CardContent>
-                            {currentUser && (
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button className={isCurrentUserConfirmed ? "bg-red-600 hover:bg-red-700" : "bg-emerald-600 hover:bg-emerald-700"} disabled={isConfirming}>
-                                          {isCurrentUserConfirmed ? 'Cancelar Asistencia' : 'Confirmar Asistencia'}
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle>{isCurrentUserConfirmed ? 'Cancelar Asistencia' : 'Confirmar Asistencia'}</DialogTitle>
-                                            <DialogDescription>
-                                              {isCurrentUserConfirmed ? '¿Estás seguro de que quieres cancelar tu asistencia a este Thinkglao?' : 'Indica la hora a la que planeas llegar para ayudar con la preparación.'}
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        {!isCurrentUserConfirmed ? (
+
+                <Card>
+                    <CardHeader className="p-4 sm:p-6">
+                        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                            <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600"/>
+                            Voluntarios Confirmados ({relatedData.volunteers.length})
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 sm:p-6">
+                        {currentUser && (
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        className={`w-full sm:w-auto h-11 sm:h-12 text-sm sm:text-base ${isCurrentUserConfirmed ? "bg-red-600 hover:bg-red-700" : "bg-emerald-600 hover:bg-emerald-700"}`}
+                                        disabled={isConfirming}
+                                    >
+                                        {isCurrentUserConfirmed ? 'Cancelar Asistencia' : 'Confirmar Asistencia'}
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle className="text-base sm:text-lg">
+                                            {isCurrentUserConfirmed ? 'Cancelar Asistencia' : 'Confirmar Asistencia'}
+                                        </DialogTitle>
+                                        <DialogDescription className="text-sm sm:text-base">
+                                            {isCurrentUserConfirmed ? '¿Estás seguro de que quieres cancelar tu asistencia a este Thinkglao?' : 'Indica la hora a la que planeas llegar para ayudar con la preparación.'}
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    {!isCurrentUserConfirmed ? (
                                         <div className="py-4">
-                                            <Label htmlFor="arrival-time">Hora de llegada</Label>
+                                            <Label htmlFor="arrival-time" className="text-sm sm:text-base">Hora de llegada</Label>
                                             <Input
                                                 id="arrival-time"
                                                 type="time"
                                                 value={arrivalTime}
                                                 onChange={(e) => setArrivalTime(e.target.value)}
+                                                className="h-11 sm:h-12 text-sm sm:text-base"
                                             />
                                         </div>
-                                        ) : null}
-                                        <DialogFooter>
-                                            {isCurrentUserConfirmed ? (
-                                              <Button variant="destructive" onClick={handleCancelAssistance} disabled={isConfirming}>{isConfirming ? 'Cancelando...' : 'Sí, cancelar'}</Button>
-                                            ) : (
-                                              <Button onClick={handleConfirmAssistance} disabled={!arrivalTime || isConfirming}>{isConfirming ? 'Confirmando...' : 'Confirmar'}</Button>
-                                            )}
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
-                            )}
-                            <div className="mt-4 space-y-3 max-h-60 overflow-auto">
-                                {relatedData.volunteers.length > 0 ? (
-                                    relatedData.volunteers.map(volunteer => (
-                                        <div key={volunteer.user_id} className="flex justify-between items-center bg-slate-50 p-2 rounded-lg">
-                                            <span className="text-sm font-medium text-slate-800">{volunteer.name}</span>
-                                            <div className="flex items-center gap-1 text-sm text-emerald-700 font-semibold bg-emerald-100 px-2 py-1 rounded-md">
-                                                <Clock className="w-3.5 h-3.5" />
-                                                {volunteer.arrival_time}
-                                            </div>
+                                    ) : null}
+                                    <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+                                        {isCurrentUserConfirmed ? (
+                                            <Button
+                                                variant="destructive"
+                                                onClick={handleCancelAssistance}
+                                                disabled={isConfirming}
+                                                className="w-full sm:w-auto h-11 sm:h-12 text-sm sm:text-base"
+                                            >
+                                                {isConfirming ? 'Cancelando...' : 'Sí, cancelar'}
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                onClick={handleConfirmAssistance}
+                                                disabled={!arrivalTime || isConfirming}
+                                                className="w-full sm:w-auto h-11 sm:h-12 text-sm sm:text-base"
+                                            >
+                                                {isConfirming ? 'Confirmando...' : 'Confirmar'}
+                                            </Button>
+                                        )}
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        )}
+                        <div className="mt-4 space-y-2 sm:space-y-3 max-h-60 overflow-auto">
+                            {relatedData.volunteers.length > 0 ? (
+                                relatedData.volunteers.map(volunteer => (
+                                    <div key={volunteer.user_id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-50 p-3 rounded-lg">
+                                        <span className="text-sm font-medium text-slate-800">{volunteer.name}</span>
+                                        <div className="flex items-center gap-1 text-xs sm:text-sm text-emerald-700 font-semibold bg-emerald-100 px-2 py-1 rounded-md">
+                                            <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+                                            {volunteer.arrival_time}
                                         </div>
-                                    ))
-                                ) : (
-                                    <p className="text-sm text-slate-500 text-center py-4">Aún no hay voluntarios confirmados.</p>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-xs sm:text-sm text-slate-500 text-center py-4">Aún no hay voluntarios confirmados.</p>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

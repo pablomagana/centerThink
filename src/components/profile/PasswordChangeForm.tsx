@@ -144,11 +144,11 @@ export default function PasswordChangeForm({ onSuccess }) {
   };
 
   const RequirementItem = ({ met, text }) => (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex items-center gap-2 text-xs sm:text-sm">
       {met ? (
-        <CheckCircle2 className="w-4 h-4 text-green-600" />
+        <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
       ) : (
-        <XCircle className="w-4 h-4 text-slate-400" />
+        <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 flex-shrink-0" />
       )}
       <span className={met ? "text-green-700" : "text-slate-600"}>{text}</span>
     </div>
@@ -161,13 +161,13 @@ export default function PasswordChangeForm({ onSuccess }) {
       transition={{ delay: 0.1 }}
     >
       <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <Lock className="w-6 h-6 text-indigo-600" />
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b p-4 sm:p-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
             Cambiar Contraseña
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-8">
+        <CardContent className="p-4 sm:p-6 md:p-8">
           {/* Alert Messages */}
           {alert && (
             <motion.div
@@ -188,9 +188,9 @@ export default function PasswordChangeForm({ onSuccess }) {
                   <AlertCircle className="h-4 w-4 text-red-600" />
                 )}
                 <AlertDescription
-                  className={
+                  className={`text-xs sm:text-sm ${
                     alert.type === "success" ? "text-green-800" : "text-red-800"
-                  }
+                  }`}
                 >
                   {alert.message}
                 </AlertDescription>
@@ -198,10 +198,10 @@ export default function PasswordChangeForm({ onSuccess }) {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Current Password */}
             <div className="space-y-2">
-              <Label htmlFor="currentPassword">
+              <Label htmlFor="currentPassword" className="text-sm sm:text-base">
                 Contraseña Actual <span className="text-red-500">*</span>
               </Label>
               <div className="relative">
@@ -212,7 +212,7 @@ export default function PasswordChangeForm({ onSuccess }) {
                   onChange={(e) =>
                     handleInputChange("currentPassword", e.target.value)
                   }
-                  className={`h-12 px-4 pr-12 ${
+                  className={`h-11 sm:h-12 px-3 sm:px-4 pr-10 sm:pr-12 text-sm sm:text-base ${
                     errors.currentPassword ? "border-red-500" : ""
                   }`}
                   disabled={loading}
@@ -220,23 +220,23 @@ export default function PasswordChangeForm({ onSuccess }) {
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility("current")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+                  className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
                 >
                   {showPasswords.current ? (
-                    <EyeOff className="w-5 h-5" />
+                    <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                   ) : (
-                    <Eye className="w-5 h-5" />
+                    <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                   )}
                 </button>
               </div>
               {errors.currentPassword && (
-                <p className="text-sm text-red-600">{errors.currentPassword}</p>
+                <p className="text-xs sm:text-sm text-red-600">{errors.currentPassword}</p>
               )}
             </div>
 
             {/* New Password */}
             <div className="space-y-2">
-              <Label htmlFor="newPassword">
+              <Label htmlFor="newPassword" className="text-sm sm:text-base">
                 Nueva Contraseña <span className="text-red-500">*</span>
               </Label>
               <div className="relative">
@@ -247,7 +247,7 @@ export default function PasswordChangeForm({ onSuccess }) {
                   onChange={(e) =>
                     handleInputChange("newPassword", e.target.value)
                   }
-                  className={`h-12 px-4 pr-12 ${
+                  className={`h-11 sm:h-12 px-3 sm:px-4 pr-10 sm:pr-12 text-sm sm:text-base ${
                     errors.newPassword ? "border-red-500" : ""
                   }`}
                   disabled={loading}
@@ -255,23 +255,23 @@ export default function PasswordChangeForm({ onSuccess }) {
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility("new")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+                  className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
                 >
                   {showPasswords.new ? (
-                    <EyeOff className="w-5 h-5" />
+                    <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                   ) : (
-                    <Eye className="w-5 h-5" />
+                    <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                   )}
                 </button>
               </div>
               {errors.newPassword && (
-                <p className="text-sm text-red-600">{errors.newPassword}</p>
+                <p className="text-xs sm:text-sm text-red-600">{errors.newPassword}</p>
               )}
             </div>
 
             {/* Confirm Password */}
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">
+              <Label htmlFor="confirmPassword" className="text-sm sm:text-base">
                 Confirmar Nueva Contraseña <span className="text-red-500">*</span>
               </Label>
               <div className="relative">
@@ -282,7 +282,7 @@ export default function PasswordChangeForm({ onSuccess }) {
                   onChange={(e) =>
                     handleInputChange("confirmPassword", e.target.value)
                   }
-                  className={`h-12 px-4 pr-12 ${
+                  className={`h-11 sm:h-12 px-3 sm:px-4 pr-10 sm:pr-12 text-sm sm:text-base ${
                     errors.confirmPassword ? "border-red-500" : ""
                   }`}
                   disabled={loading}
@@ -290,17 +290,17 @@ export default function PasswordChangeForm({ onSuccess }) {
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility("confirm")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+                  className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
                 >
                   {showPasswords.confirm ? (
-                    <EyeOff className="w-5 h-5" />
+                    <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                   ) : (
-                    <Eye className="w-5 h-5" />
+                    <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                   )}
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-sm text-red-600">{errors.confirmPassword}</p>
+                <p className="text-xs sm:text-sm text-red-600">{errors.confirmPassword}</p>
               )}
             </div>
 
@@ -309,9 +309,9 @@ export default function PasswordChangeForm({ onSuccess }) {
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="space-y-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
+                className="space-y-2 p-3 sm:p-4 bg-slate-50 rounded-lg border border-slate-200"
               >
-                <p className="text-sm font-medium text-slate-700 mb-2">
+                <p className="text-xs sm:text-sm font-medium text-slate-700 mb-2">
                   Requisitos de contraseña:
                 </p>
                 <RequirementItem
@@ -338,7 +338,7 @@ export default function PasswordChangeForm({ onSuccess }) {
               <Button
                 type="submit"
                 disabled={loading || !formData.currentPassword || !formData.newPassword || !formData.confirmPassword}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-12 px-8 text-base"
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base"
               >
                 {loading ? (
                   <>

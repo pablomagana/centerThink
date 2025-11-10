@@ -129,34 +129,34 @@ export default function ResetPasswordPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
               <img src="/favicon.svg" alt="CenterThink" className="w-16 h-16 rounded-2xl" />
             </div>
-            <h1 className="text-3xl font-bold text-slate-900">CenterThink</h1>
-            <p className="text-slate-600 mt-2">Gestión de Thinkglaos</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">CenterThink</h1>
+            <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">Gestión de Thinkglaos</p>
           </div>
 
           <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-            <CardHeader>
+            <CardHeader className="p-4 sm:p-6">
               <div className="flex justify-center mb-4">
                 <div className="rounded-full bg-green-100 p-3">
-                  <CheckCircle2 className="w-12 h-12 text-green-600" />
+                  <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
                 </div>
               </div>
-              <CardTitle className="text-2xl text-center">¡Contraseña Actualizada!</CardTitle>
-              <CardDescription className="text-center">
+              <CardTitle className="text-xl sm:text-2xl text-center">¡Contraseña Actualizada!</CardTitle>
+              <CardDescription className="text-sm sm:text-base text-center">
                 Tu contraseña ha sido cambiada correctamente
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <p className="text-sm text-green-900 text-center">
+            <CardContent className="space-y-4 p-4 sm:p-6">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-green-900 text-center">
                   Ahora puedes iniciar sesión con tu nueva contraseña
                 </p>
               </div>
 
-              <div className="text-center text-sm text-slate-600">
+              <div className="text-center text-xs sm:text-sm text-slate-600">
                 <p>Serás redirigido al login en 3 segundos...</p>
                 <Button
                   onClick={() => navigate('/login')}
-                  className="mt-4 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700"
+                  className="mt-4 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 h-11 sm:h-12 text-sm sm:text-base"
                 >
                   Ir al Login Ahora
                 </Button>
@@ -181,32 +181,32 @@ export default function ResetPasswordPage() {
         </div>
 
         <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl">Crear Nueva Contraseña</CardTitle>
-            <CardDescription>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-xl sm:text-2xl">Crear Nueva Contraseña</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
               Ingresa tu nueva contraseña segura
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             {!validSession ? (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
+                <AlertDescription className="text-xs sm:text-sm">
                   {error || 'Enlace inválido o expirado. Por favor, solicita un nuevo enlace de recuperación.'}
                 </AlertDescription>
               </Alert>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                 {error && (
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription className="text-xs sm:text-sm">{error}</AlertDescription>
                   </Alert>
                 )}
 
                 {/* Nueva Contraseña */}
                 <div className="space-y-2">
-                  <Label htmlFor="password">
+                  <Label htmlFor="password" className="text-sm sm:text-base">
                     Nueva Contraseña <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
@@ -220,18 +220,18 @@ export default function ResetPasswordPage() {
                       onBlur={() => setPasswordFocused(false)}
                       required
                       disabled={loading}
-                      className="h-12 pr-10"
+                      className="h-11 sm:h-12 pr-10 text-sm sm:text-base"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                       tabIndex={-1}
                     >
                       {showPassword ? (
-                        <EyeOff className="w-5 h-5" />
+                        <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                       ) : (
-                        <Eye className="w-5 h-5" />
+                        <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </button>
                   </div>
@@ -247,9 +247,9 @@ export default function ResetPasswordPage() {
                         return (
                           <div key={index} className="flex items-center gap-2 text-xs">
                             {isMet ? (
-                              <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                              <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
                             ) : (
-                              <X className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 flex-shrink-0" />
                             )}
                             <span className={isMet ? 'text-green-700' : 'text-slate-600'}>
                               {requirement.label}
@@ -263,7 +263,7 @@ export default function ResetPasswordPage() {
 
                 {/* Confirmar Contraseña */}
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">
+                  <Label htmlFor="confirmPassword" className="text-sm sm:text-base">
                     Confirmar Contraseña <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
@@ -275,7 +275,7 @@ export default function ResetPasswordPage() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                       disabled={loading}
-                      className={`h-12 pr-10 ${
+                      className={`h-11 sm:h-12 pr-10 text-sm sm:text-base ${
                         confirmPassword && !passwordsMatch
                           ? 'border-red-500 focus:ring-red-500'
                           : ''
@@ -284,13 +284,13 @@ export default function ResetPasswordPage() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                       tabIndex={-1}
                     >
                       {showConfirmPassword ? (
-                        <EyeOff className="w-5 h-5" />
+                        <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                       ) : (
-                        <Eye className="w-5 h-5" />
+                        <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </button>
                   </div>
@@ -301,7 +301,7 @@ export default function ResetPasswordPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 h-12 text-base"
+                  className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 h-11 sm:h-12 text-sm sm:text-base"
                   disabled={loading || !isFormValid()}
                 >
                   {loading ? (

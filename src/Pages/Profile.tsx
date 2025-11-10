@@ -68,7 +68,7 @@ export default function Profile() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6"
     >
       {/* Alert Messages */}
       {alert && (
@@ -90,9 +90,9 @@ export default function Profile() {
               <AlertCircle className="h-4 w-4 text-red-600" />
             )}
             <AlertDescription
-              className={
+              className={`text-xs sm:text-sm ${
                 alert.type === "success" ? "text-green-800" : "text-red-800"
-              }
+              }`}
             >
               {alert.message}
             </AlertDescription>

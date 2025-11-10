@@ -164,20 +164,20 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Gestión de Usuarios</h1>
-          <p className="text-slate-600 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Gestión de Usuarios</h1>
+          <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">
             Administra los usuarios y sus permisos en la aplicación
           </p>
         </div>
         <Button
           onClick={handleCreate}
           disabled={showDialog}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg h-12 px-8 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <UserPlus className="w-5 h-5 mr-2" />
+          <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
           Crear Usuario
         </Button>
       </div>
