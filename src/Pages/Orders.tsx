@@ -20,7 +20,7 @@ export default function OrdersPage() {
   console.log('OrdersPage: Component render', {
     profile,
     profileRole: profile?.role,
-    hasAccess: profile?.role === 'admin' || profile?.role === 'supplier'
+    hasAccess: profile?.role === 'admin' || profile?.role === 'supplier' || profile?.role === 'user'
   })
 
   const [requests, setRequests] = useState([])
@@ -35,8 +35,8 @@ export default function OrdersPage() {
     creatorName: ''
   })
 
-  // Check if user has access (admin or supplier only)
-  const hasAccess = profile?.role === 'admin' || profile?.role === 'supplier'
+  // Check if user has access (admin, supplier or user)
+  const hasAccess = profile?.role === 'admin' || profile?.role === 'supplier' || profile?.role === 'user'
 
   useEffect(() => {
     console.log('OrdersPage: useEffect triggered', { hasAccess, profile, profileRole: profile?.role })
@@ -74,15 +74,15 @@ export default function OrdersPage() {
         // Admin can see all active cities
         console.log('Orders: User is admin, showing all cities')
         setCities(activeCities)
-      } else if (profile?.role === 'supplier' && profile?.cities) {
-        // Supplier can only see their assigned cities
-        const supplierCityIds = profile.cities
-        console.log('Orders: User is supplier, filtering cities', supplierCityIds)
-        const supplierCities = activeCities.filter(city =>
-          supplierCityIds.includes(city.id)
+      } else if ((profile?.role === 'supplier' || profile?.role === 'user') && profile?.cities) {
+        // Supplier and user can only see their assigned cities
+        const userCityIds = profile.cities
+        console.log('Orders: User is supplier/user, filtering cities', userCityIds)
+        const userCities = activeCities.filter(city =>
+          userCityIds.includes(city.id)
         )
-        console.log('Orders: Supplier cities', supplierCities)
-        setCities(supplierCities)
+        console.log('Orders: User cities', userCities)
+        setCities(userCities)
       } else {
         // Fallback: show all active cities
         console.log('Orders: Fallback, showing all active cities')
@@ -148,13 +148,13 @@ export default function OrdersPage() {
     return statusMatch && typeMatch && cityMatch && nameMatch && selectedCityMatch
   })
 
-  // Access denied for non-admin/supplier users
+  // Access denied for unauthenticated users
   if (!hasAccess) {
     return (
       <div className="flex items-center justify-center h-64">
         <Alert variant="destructive" className="max-w-md">
           <AlertDescription>
-            No tienes permisos para acceder a esta sección. Solo administradores y proveedores pueden gestionar solicitudes de gastos.
+            No tienes permisos para acceder a esta sección. Por favor, inicia sesión para gestionar solicitudes de gastos.
           </AlertDescription>
         </Alert>
       </div>

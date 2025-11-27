@@ -56,8 +56,29 @@ export default function EventsPage() {
         Venue.list(),
         City.list()
       ]);
-      
-      setEvents(eventsData);
+
+      // Actualizar automáticamente los eventos pasados a "completado"
+      const now = new Date();
+      const eventsToUpdate = eventsData.filter((event: any) => {
+        const eventDate = new Date(event.date);
+        // Si la fecha ya pasó y el estado no es "completado" ni "cancelado"
+        return eventDate < now && event.status !== "completado" && event.status !== "cancelado";
+      });
+
+      // Actualizar cada evento pasado a "completado"
+      if (eventsToUpdate.length > 0) {
+        await Promise.all(
+          eventsToUpdate.map((event: any) =>
+            Event.update(event.id, { status: "completado" })
+          )
+        );
+        // Recargar los eventos con los estados actualizados
+        const updatedEventsData = await Event.list("-date");
+        setEvents(updatedEventsData);
+      } else {
+        setEvents(eventsData);
+      }
+
       setSpeakers(speakersData.filter(s => s.active));
       setVenues(venuesData.filter(v => v.active));
       setCities(citiesData.filter(c => c.active));
