@@ -114,14 +114,14 @@ export default function EventsList({
           >
             <Card className="h-full shadow-lg border-0 bg-white/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
               <CardHeader className="pb-3 sm:pb-4 p-4 sm:p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div 
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div
                       className="w-10 h-10 rounded-lg flex-shrink-0 bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center text-white"
                     >
                       <Zap className="w-5 h-5" />
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-bold text-slate-900 truncate text-base sm:text-lg capitalize">
                         {eventTitle}
                       </h3>

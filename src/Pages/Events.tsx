@@ -120,6 +120,7 @@ export default function EventsPage() {
           speakers={speakers}
           venues={venues}
           cities={cities}
+          selectedCity={selectedCity}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
         />

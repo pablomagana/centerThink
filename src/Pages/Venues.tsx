@@ -102,6 +102,7 @@ export default function VenuesPage() {
         <VenueForm
           venue={editingVenue}
           cities={cities}
+          selectedCity={selectedCity}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
         />

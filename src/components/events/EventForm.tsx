@@ -50,21 +50,23 @@ interface EventFormProps {
   speakers: Speaker[];
   venues: Venue[];
   cities: City[];
+  selectedCity?: City | null;
   onSubmit: (data: any) => void;
   onCancel: () => void;
 }
 
-export default function EventForm({ 
-  event, 
-  speakers, 
-  venues, 
-  cities, 
-  onSubmit, 
-  onCancel 
+export default function EventForm({
+  event,
+  speakers,
+  venues,
+  cities,
+  selectedCity,
+  onSubmit,
+  onCancel
 }: EventFormProps) {
   const [formData, setFormData] = useState({
     description: event?.description || "",
-    city_id: event?.city_id || "",
+    city_id: event?.city_id || selectedCity?.id || "",
     date: event?.date ? new Date(event.date).toISOString().slice(0, 16) : "",
     speaker_id: event?.speaker_id || "_none",
     venue_id: event?.venue_id || "_none",

@@ -8,11 +8,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Building2, Save, X } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function VenueForm({ venue, cities, onSubmit, onCancel }) {
+export default function VenueForm({ venue, cities, selectedCity, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
     name: venue?.name || "",
     address: venue?.address || "",
-    city_id: venue?.city_id || "",
+    city_id: venue?.city_id || selectedCity?.id || "",
     capacity: venue?.capacity || "",
     contact_name: venue?.contact_name || "",
     contact_phone: venue?.contact_phone || "",
