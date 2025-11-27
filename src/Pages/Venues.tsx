@@ -59,6 +59,15 @@ export default function VenuesPage() {
     setEditingVenue(null);
   };
 
+  const handleDelete = async (venueId) => {
+    try {
+      await Venue.delete(venueId);
+      loadData();
+    } catch (error) {
+      console.error("Error deleting venue:", error);
+    }
+  };
+
   const filteredVenues = venues.filter(venue => {
     return selectedCity ? venue.city_id === selectedCity.id : true;
   });
@@ -102,6 +111,7 @@ export default function VenuesPage() {
         venues={filteredVenues}
         cities={cities}
         onEdit={handleEdit}
+        onDelete={handleDelete}
       />
     </div>
   );

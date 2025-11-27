@@ -73,6 +73,15 @@ export default function EventsPage() {
     setEditingEvent(null);
   };
 
+  const handleDelete = async (eventId) => {
+    try {
+      await Event.delete(eventId);
+      loadData();
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
+  };
+
   const filteredEvents = events.filter(event => {
     const statusMatch = filters.status === "all" || event.status === filters.status;
     const cityMatch = selectedCity ? event.city_id === selectedCity.id : true;
@@ -127,7 +136,7 @@ export default function EventsPage() {
         venues={venues}
         cities={cities}
         onEdit={handleEdit}
-        onRefresh={loadData}
+        onDelete={handleDelete}
       />
     </div>
   );
