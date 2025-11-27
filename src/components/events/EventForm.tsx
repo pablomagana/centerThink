@@ -9,6 +9,51 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar as CalendarIcon, Save, X } from "lucide-react";
 import { motion } from "framer-motion";
 
+interface City {
+  id: string;
+  name: string;
+  country: string;
+}
+
+interface Speaker {
+  id: string;
+  name: string;
+}
+
+interface Venue {
+  id: string;
+  name: string;
+}
+
+interface EventPreparations {
+  presentation_video?: string;
+  poster_image?: string;
+  theme?: string;
+  transport?: string;
+  accommodation?: string;
+}
+
+interface Event {
+  description?: string;
+  city_id?: string;
+  date?: string;
+  speaker_id?: string;
+  venue_id?: string;
+  status?: string;
+  max_attendees?: number | string;
+  notes?: string;
+  preparations?: EventPreparations;
+}
+
+interface EventFormProps {
+  event?: Event | null;
+  speakers: Speaker[];
+  venues: Venue[];
+  cities: City[];
+  onSubmit: (data: any) => void;
+  onCancel: () => void;
+}
+
 export default function EventForm({ 
   event, 
   speakers, 
@@ -16,13 +61,13 @@ export default function EventForm({
   cities, 
   onSubmit, 
   onCancel 
-}) {
+}: EventFormProps) {
   const [formData, setFormData] = useState({
     description: event?.description || "",
     city_id: event?.city_id || "",
     date: event?.date ? new Date(event.date).toISOString().slice(0, 16) : "",
-    speaker_id: event?.speaker_id || "",
-    venue_id: event?.venue_id || "",
+    speaker_id: event?.speaker_id || "_none",
+    venue_id: event?.venue_id || "_none",
     status: event?.status || "planificacion",
     max_attendees: event?.max_attendees || "",
     notes: event?.notes || "",
@@ -35,18 +80,18 @@ export default function EventForm({
     }
   });
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handlePreparationChange = (field, value) => {
+  const handlePreparationChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       preparations: { ...prev.preparations, [field]: value }
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Generate title automatically
@@ -60,7 +105,7 @@ export default function EventForm({
     if (formData.date) {
       try {
         const dateObj = new Date(formData.date);
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
         formattedDate = dateObj.toLocaleDateString('es-ES', options);
       } catch (error) {
         console.error("Error formatting date for title:", error);
@@ -77,9 +122,12 @@ export default function EventForm({
 
     onSubmit({
       ...formData,
+      city_id: formData.city_id || null,
+      speaker_id: formData.speaker_id === "_none" || !formData.speaker_id ? null : formData.speaker_id,
+      venue_id: formData.venue_id === "_none" || !formData.venue_id ? null : formData.venue_id,
       title: generatedTitle, // Add the generated title here
       date: new Date(formData.date).toISOString(),
-      max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null
+      max_attendees: formData.max_attendees ? Number.parseInt(formData.max_attendees as string) : null
     });
   };
 
@@ -89,7 +137,7 @@ export default function EventForm({
     { value: "resuelto", label: "Resuelto", color: "text-emerald-600 bg-emerald-50" }
   ];
 
-  const preparationFields = [
+  const preparationFields: { key: keyof EventPreparations; label: string }[] = [
     { key: "presentation_video", label: "Vídeo de Presentación" },
     { key: "poster_image", label: "Imagen/Cartel" },
     { key: "theme", label: "Tema" },
@@ -120,7 +168,7 @@ export default function EventForm({
                 <Label htmlFor="city_id">Ciudad *</Label>
                 <Select
                   value={formData.city_id}
-                  onValueChange={(value) => handleInputChange("city_id", value)}
+                  onValueChange={(value: string) => handleInputChange("city_id", value)}
                   required
                 >
                   <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
@@ -142,7 +190,7 @@ export default function EventForm({
                   id="date"
                   type="datetime-local"
                   value={formData.date}
-                  onChange={(e) => handleInputChange("date", e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("date", e.target.value)}
                   required
                   className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
@@ -152,13 +200,13 @@ export default function EventForm({
                 <Label htmlFor="speaker_id" className="text-sm sm:text-base">Ponente</Label>
                 <Select
                   value={formData.speaker_id}
-                  onValueChange={(value) => handleInputChange("speaker_id", value)}
+                  onValueChange={(value: string) => handleInputChange("speaker_id", value)}
                 >
                   <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
                     <SelectValue placeholder="Seleccionar ponente" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[60vh]">
-                    <SelectItem value={null} className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">Sin asignar</SelectItem>
+                    <SelectItem value="_none" className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">Sin asignar</SelectItem>
                     {speakers.map((speaker) => (
                       <SelectItem key={speaker.id} value={speaker.id} className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">
                         {speaker.name}
@@ -172,13 +220,13 @@ export default function EventForm({
                 <Label htmlFor="venue_id" className="text-sm sm:text-base">Local</Label>
                 <Select
                   value={formData.venue_id}
-                  onValueChange={(value) => handleInputChange("venue_id", value)}
+                  onValueChange={(value: string) => handleInputChange("venue_id", value)}
                 >
                   <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
                     <SelectValue placeholder="Seleccionar local" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[60vh]">
-                    <SelectItem value={null} className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">Sin asignar</SelectItem>
+                    <SelectItem value="_none" className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">Sin asignar</SelectItem>
                     {venues.map((venue) => (
                       <SelectItem key={venue.id} value={venue.id} className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">
                         {venue.name}
@@ -192,7 +240,7 @@ export default function EventForm({
                 <Label htmlFor="status" className="text-sm sm:text-base">Estado</Label>
                 <Select
                   value={formData.status}
-                  onValueChange={(value) => handleInputChange("status", value)}
+                  onValueChange={(value: string) => handleInputChange("status", value)}
                 >
                   <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
                     <SelectValue />
@@ -212,7 +260,7 @@ export default function EventForm({
                   id="max_attendees"
                   type="number"
                   value={formData.max_attendees}
-                  onChange={(e) => handleInputChange("max_attendees", e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("max_attendees", e.target.value)}
                   placeholder="Ej: 100"
                   className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
                 />
@@ -224,7 +272,7 @@ export default function EventForm({
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => handleInputChange("description", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleInputChange("description", e.target.value)}
                 placeholder="Descripción del evento..."
                 rows={4}
                 className="text-sm sm:text-base px-3 sm:px-4 py-2 sm:py-3"
@@ -241,7 +289,7 @@ export default function EventForm({
                     <Label className="text-sm sm:text-base">{label}</Label>
                     <Select
                       value={formData.preparations[key]}
-                      onValueChange={(value) => handlePreparationChange(key, value)}
+                      onValueChange={(value: string) => handlePreparationChange(key, value)}
                     >
                       <SelectTrigger className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base">
                         <SelectValue />
@@ -266,7 +314,7 @@ export default function EventForm({
               <Textarea
                 id="notes"
                 value={formData.notes}
-                onChange={(e) => handleInputChange("notes", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleInputChange("notes", e.target.value)}
                 placeholder="Notas internas del evento..."
                 rows={3}
                 className="text-sm sm:text-base px-3 sm:px-4 py-2 sm:py-3"
