@@ -125,6 +125,18 @@ export default function OrdersPage() {
     setShowForm(true)
   }
 
+  const handleDelete = async (requestId: string) => {
+    try {
+      await ExpenseRequest.delete(requestId)
+      await loadData()
+    } catch (error) {
+      console.error('Error deleting expense request:', error)
+    }
+  }
+
+  // Check if user is admin (only admins can delete)
+  const isAdmin = profile?.role === 'admin'
+
   // Filter requests
   const filteredRequests = requests.filter(request => {
     // Status filter
@@ -278,6 +290,8 @@ export default function OrdersPage() {
       <ExpenseRequestsList
         requests={filteredRequests}
         onEdit={handleEdit}
+        onDelete={handleDelete}
+        canDelete={isAdmin}
       />
 
       {/* Form Modal */}

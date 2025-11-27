@@ -10,11 +10,23 @@ import {
   User,
   Mail,
   Euro,
-  Edit
+  Edit,
+  Trash2
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import {
   REQUEST_TYPE_LABELS,
   STATUS_LABELS,
@@ -28,9 +40,11 @@ import { AttachmentsViewer } from './AttachmentsViewer'
 interface ExpenseRequestsListProps {
   requests: any[]
   onEdit: (request: any) => void
+  onDelete?: (requestId: string) => void
+  canDelete?: boolean
 }
 
-export function ExpenseRequestsList({ requests, onEdit }: ExpenseRequestsListProps) {
+export function ExpenseRequestsList({ requests, onEdit, onDelete, canDelete = false }: ExpenseRequestsListProps) {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pendiente':
@@ -83,14 +97,45 @@ export function ExpenseRequestsList({ requests, onEdit }: ExpenseRequestsListPro
                 <CardTitle className="text-lg font-semibold line-clamp-2">
                   {request.request_name}
                 </CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onEdit(request)}
-                  className="shrink-0"
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
+                <div className="flex gap-1 shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onEdit(request)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  {canDelete && onDelete && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>¿Eliminar esta solicitud?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta acción no se puede deshacer. Se eliminará permanentemente la solicitud "{request.request_name}".
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => onDelete(request.id)}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </div>
               </div>
 
               {/* Badges */}
