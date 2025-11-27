@@ -98,15 +98,14 @@ export default function VenuesPage() {
         </Button>
       </div>
 
-      {showForm && (
-        <VenueForm
-          venue={editingVenue}
-          cities={cities}
-          selectedCity={selectedCity}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-        />
-      )}
+      <VenueForm
+        venue={editingVenue}
+        cities={cities}
+        selectedCity={selectedCity}
+        isOpen={showForm}
+        onClose={handleCancel}
+        onSubmit={handleSubmit}
+      />
 
       <VenuesList
         venues={filteredVenues}

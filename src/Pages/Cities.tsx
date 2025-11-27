@@ -104,13 +104,12 @@ export default function CitiesPage() {
         </Button>
       </div>
 
-      {showForm && (
-        <CityForm
-          city={editingCity}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-        />
-      )}
+      <CityForm
+        city={editingCity}
+        isOpen={showForm}
+        onClose={handleCancel}
+        onSubmit={handleSubmit}
+      />
 
       {errorMessage && (
         <Alert variant="destructive">

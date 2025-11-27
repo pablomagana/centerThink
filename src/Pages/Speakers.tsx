@@ -93,13 +93,12 @@ export default function SpeakersPage() {
         </Button>
       </div>
 
-      {showForm && (
-        <SpeakerForm
-          speaker={editingSpeaker}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-        />
-      )}
+      <SpeakerForm
+        speaker={editingSpeaker}
+        isOpen={showForm}
+        onClose={handleCancel}
+        onSubmit={handleSubmit}
+      />
 
       <SpeakersList
         speakers={speakers}

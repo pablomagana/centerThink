@@ -154,18 +154,17 @@ export default function EventsPage() {
         </Button>
       </div>
 
-      {showForm && (
-        <EventForm
-          event={editingEvent}
-          speakers={speakers}
-          venues={venues}
-          cities={cities}
-          selectedCity={selectedCity}
-          defaultDate={defaultDate}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-        />
-      )}
+      <EventForm
+        event={editingEvent}
+        speakers={speakers}
+        venues={venues}
+        cities={cities}
+        selectedCity={selectedCity}
+        defaultDate={defaultDate}
+        isOpen={showForm}
+        onClose={handleCancel}
+        onSubmit={handleSubmit}
+      />
 
       <EventFilters 
         filters={filters}
