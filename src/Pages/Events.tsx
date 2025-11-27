@@ -20,7 +20,7 @@ export default function EventsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [filters, setFilters] = useState({
-    status: "all",
+    status: "active",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [defaultDate, setDefaultDate] = useState(null);
@@ -123,7 +123,15 @@ export default function EventsPage() {
   };
 
   const filteredEvents = events.filter(event => {
-    const statusMatch = filters.status === "all" || event.status === filters.status;
+    let statusMatch = false;
+    if (filters.status === "all") {
+      statusMatch = true;
+    } else if (filters.status === "active") {
+      // Mostrar todos excepto completados
+      statusMatch = event.status !== "completado";
+    } else {
+      statusMatch = event.status === filters.status;
+    }
     const cityMatch = selectedCity ? event.city_id === selectedCity.id : true;
     return statusMatch && cityMatch;
   });

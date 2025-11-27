@@ -25,6 +25,7 @@ export default function EventFilters({ filters, setFilters }) {
               <SelectValue placeholder="Estado" />
             </SelectTrigger>
             <SelectContent className="max-h-[60vh]">
+              <SelectItem value="active" className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">Activos (no completados)</SelectItem>
               <SelectItem value="all" className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">Todos los estados</SelectItem>
               <SelectItem value="planificacion" className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">Planificación</SelectItem>
               <SelectItem value="confirmado" className="py-2.5 px-3 sm:px-4 text-sm sm:text-base">Confirmado</SelectItem>
