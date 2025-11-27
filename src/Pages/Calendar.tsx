@@ -2,10 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { base44 } from "@/api/base44Client";
 import { AppContext } from "@/components/AppContextProvider";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, User, MapPin, Calendar as CalendarDaysIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, User, MapPin, Calendar as CalendarDaysIcon, Plus } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 // Helper para obtener el año de inicio del curso académico para una fecha dada
 const getAcademicYearStart = (date) => {
@@ -19,6 +20,7 @@ export default function CalendarPage() {
   const [academicYear, setAcademicYear] = useState(getAcademicYearStart(new Date()));
   const [isLoading, setIsLoading] = useState(true);
   const { selectedCity } = useContext(AppContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadData = async () => {
@@ -109,9 +111,20 @@ export default function CalendarPage() {
                   transition={{ delay: index * 0.05 }}
                   className="bg-white rounded-xl border border-slate-200 shadow-md flex flex-col"
                 >
-                  <h3 className="font-bold text-lg text-slate-800 p-4 border-b border-slate-200 capitalize">
-                    {name}
-                  </h3>
+                  <div className="flex items-center justify-between p-4 border-b border-slate-200">
+                    <h3 className="font-bold text-lg text-slate-800 capitalize">
+                      {name}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                      onClick={() => navigate(`/events?new=true&month=${month}&year=${year}`)}
+                      title={`Crear Thinkglao en ${name}`}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
                   <div className="p-4 space-y-3 flex-1 overflow-auto min-h-[150px] bg-slate-50/50">
                     {monthEvents.length > 0 ? (
                       monthEvents.map(event => {

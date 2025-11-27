@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useContext } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Event } from "@/entities/Event";
 import { Speaker } from "@/entities/Speaker";
 import { Venue } from "@/entities/Venue";
@@ -22,7 +23,25 @@ export default function EventsPage() {
     status: "all",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [defaultDate, setDefaultDate] = useState(null);
   const { selectedCity } = useContext(AppContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Abrir modal si viene de calendario con ?new=true
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      const month = searchParams.get("month");
+      const year = searchParams.get("year");
+      if (month && year) {
+        // Crear fecha para el día 15 del mes seleccionado
+        const date = new Date(parseInt(year), parseInt(month), 15);
+        setDefaultDate(date.toISOString().slice(0, 10));
+      }
+      setShowForm(true);
+      // Limpiar los parámetros de la URL
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     loadData();
@@ -121,6 +140,7 @@ export default function EventsPage() {
           venues={venues}
           cities={cities}
           selectedCity={selectedCity}
+          defaultDate={defaultDate}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
         />

@@ -51,6 +51,7 @@ interface EventFormProps {
   venues: Venue[];
   cities: City[];
   selectedCity?: City | null;
+  defaultDate?: string | null;
   onSubmit: (data: any) => void;
   onCancel: () => void;
 }
@@ -61,17 +62,47 @@ export default function EventForm({
   venues,
   cities,
   selectedCity,
+  defaultDate,
   onSubmit,
   onCancel
 }: EventFormProps) {
+  const getInitialDate = () => {
+    if (event?.date) {
+      try {
+        const date = new Date(event.date);
+        if (!isNaN(date.getTime())) {
+          return date.toISOString().slice(0, 10);
+        }
+      } catch (e) {
+        console.error("Error parsing event date:", e);
+      }
+    }
+    return defaultDate || "";
+  };
+
+  const getInitialTime = () => {
+    if (event?.date) {
+      try {
+        const date = new Date(event.date);
+        if (!isNaN(date.getTime())) {
+          return date.toISOString().slice(11, 16);
+        }
+      } catch (e) {
+        console.error("Error parsing event time:", e);
+      }
+    }
+    return "20:00";
+  };
+
   const [formData, setFormData] = useState({
     description: event?.description || "",
     city_id: event?.city_id || selectedCity?.id || "",
-    date: event?.date ? new Date(event.date).toISOString().slice(0, 16) : "",
+    date: getInitialDate(),
+    time: getInitialTime(),
     speaker_id: event?.speaker_id || "_none",
     venue_id: event?.venue_id || "_none",
     status: event?.status || "planificacion",
-    max_attendees: event?.max_attendees || "",
+    max_attendees: event?.max_attendees !== null && event?.max_attendees !== undefined ? String(event.max_attendees) : "",
     notes: event?.notes || "",
     preparations: {
       presentation_video: event?.preparations?.presentation_video || "pendiente",
@@ -103,10 +134,13 @@ export default function EventForm({
     const selectedSpeaker = speakers.find(speaker => speaker.id === formData.speaker_id);
     const speakerName = selectedSpeaker ? selectedSpeaker.name : "Ponente No Asignado";
 
+    // Combinar fecha y hora
+    const dateTimeString = `${formData.date}T${formData.time}`;
+    const dateObj = new Date(dateTimeString);
+
     let formattedDate = "";
     if (formData.date) {
       try {
-        const dateObj = new Date(formData.date);
         const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
         formattedDate = dateObj.toLocaleDateString('es-ES', options);
       } catch (error) {
@@ -127,8 +161,8 @@ export default function EventForm({
       city_id: formData.city_id || null,
       speaker_id: formData.speaker_id === "_none" || !formData.speaker_id ? null : formData.speaker_id,
       venue_id: formData.venue_id === "_none" || !formData.venue_id ? null : formData.venue_id,
-      title: generatedTitle, // Add the generated title here
-      date: new Date(formData.date).toISOString(),
+      title: generatedTitle,
+      date: dateObj.toISOString(),
       max_attendees: formData.max_attendees ? Number.parseInt(formData.max_attendees as string) : null
     });
   };
@@ -186,16 +220,29 @@ export default function EventForm({
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="date" className="text-sm sm:text-base">Fecha y Hora *</Label>
-                <Input
-                  id="date"
-                  type="datetime-local"
-                  value={formData.date}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("date", e.target.value)}
-                  required
-                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="date" className="text-sm sm:text-base">Fecha *</Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={formData.date}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("date", e.target.value)}
+                    required
+                    className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="time" className="text-sm sm:text-base">Hora *</Label>
+                  <Input
+                    id="time"
+                    type="time"
+                    value={formData.time}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("time", e.target.value)}
+                    required
+                    className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
