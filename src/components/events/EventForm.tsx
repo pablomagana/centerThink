@@ -77,6 +77,11 @@ export default function EventForm({
 }: EventFormProps) {
   const getInitialDate = () => {
     if (event?.date) {
+      // Si viene como YYYY-MM-DD (formato DATE de Supabase)
+      if (event.date.length === 10) {
+        return event.date;
+      }
+      // Si viene como ISO datetime, extraer solo la fecha
       try {
         const date = new Date(event.date);
         if (!isNaN(date.getTime())) {
@@ -89,25 +94,10 @@ export default function EventForm({
     return defaultDate || "";
   };
 
-  const getInitialTime = () => {
-    if (event?.date) {
-      try {
-        const date = new Date(event.date);
-        if (!isNaN(date.getTime())) {
-          return date.toISOString().slice(11, 16);
-        }
-      } catch (e) {
-        console.error("Error parsing event time:", e);
-      }
-    }
-    return "20:00";
-  };
-
   const [formData, setFormData] = useState({
     description: event?.description || "",
     city_id: event?.city_id || selectedCity?.id || "",
     date: getInitialDate(),
-    time: getInitialTime(),
     speaker_id: event?.speaker_id || "_none",
     venue_id: event?.venue_id || "_none",
     status: event?.status || "planificacion",
@@ -126,6 +116,11 @@ export default function EventForm({
   React.useEffect(() => {
     const getDate = () => {
       if (event?.date) {
+        // Si viene como YYYY-MM-DD (formato DATE de Supabase)
+        if (event.date.length === 10) {
+          return event.date;
+        }
+        // Si viene como ISO datetime, extraer solo la fecha
         try {
           const date = new Date(event.date);
           if (!isNaN(date.getTime())) {
@@ -138,25 +133,10 @@ export default function EventForm({
       return defaultDate || "";
     };
 
-    const getTime = () => {
-      if (event?.date) {
-        try {
-          const date = new Date(event.date);
-          if (!isNaN(date.getTime())) {
-            return date.toISOString().slice(11, 16);
-          }
-        } catch (e) {
-          console.error("Error parsing event time:", e);
-        }
-      }
-      return "20:00";
-    };
-
     setFormData({
       description: event?.description || "",
       city_id: event?.city_id || selectedCity?.id || "",
       date: getDate(),
-      time: getTime(),
       speaker_id: event?.speaker_id || "_none",
       venue_id: event?.venue_id || "_none",
       status: event?.status || "planificacion",
@@ -193,13 +173,12 @@ export default function EventForm({
     const selectedSpeaker = speakers.find(speaker => speaker.id === formData.speaker_id);
     const speakerName = selectedSpeaker ? selectedSpeaker.name : "Ponente No Asignado";
 
-    // Combinar fecha y hora
-    const dateTimeString = `${formData.date}T${formData.time}`;
-    const dateObj = new Date(dateTimeString);
-
     let formattedDate = "";
     if (formData.date) {
       try {
+        // Crear fecha a partir del string YYYY-MM-DD
+        const [year, month, day] = formData.date.split('-').map(Number);
+        const dateObj = new Date(year, month - 1, day);
         const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
         formattedDate = dateObj.toLocaleDateString('es-ES', options);
       } catch (error) {
@@ -221,7 +200,7 @@ export default function EventForm({
       speaker_id: formData.speaker_id === "_none" || !formData.speaker_id ? null : formData.speaker_id,
       venue_id: formData.venue_id === "_none" || !formData.venue_id ? null : formData.venue_id,
       title: generatedTitle,
-      date: dateObj.toISOString(),
+      date: formData.date, // Enviar solo la fecha YYYY-MM-DD
       max_attendees: formData.max_attendees ? Number.parseInt(formData.max_attendees as string) : null
     });
   };
@@ -275,29 +254,16 @@ export default function EventForm({
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date" className="text-sm sm:text-base">Fecha *</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("date", e.target.value)}
-                  required
-                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="time" className="text-sm sm:text-base">Hora *</Label>
-                <Input
-                  id="time"
-                  type="time"
-                  value={formData.time}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("time", e.target.value)}
-                  required
-                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="date" className="text-sm sm:text-base">Fecha *</Label>
+              <Input
+                id="date"
+                type="date"
+                value={formData.date}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("date", e.target.value)}
+                required
+                className="h-11 sm:h-12 px-3 sm:px-4 text-sm sm:text-base"
+              />
             </div>
 
             <div className="space-y-2">

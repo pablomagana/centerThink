@@ -14,8 +14,8 @@ export const EventSchema = {
         },
         date: {
             type: "string",
-            format: "date-time",
-            description: "Fecha y hora del evento"
+            format: "date",
+            description: "Fecha del evento"
         },
         speaker_id: {
             type: "string",
