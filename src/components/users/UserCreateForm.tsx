@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserPlus, X, Loader2, KeyRound, Mail, Eye, EyeOff, CheckCircle2, AlertCircle } from "lucide-react";
+import { UserPlus, X, Loader2, KeyRound, Mail, Eye, EyeOff, CheckCircle2, AlertCircle, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   DialogHeader,
@@ -472,12 +472,16 @@ export default function UserCreateForm({
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Creando Usuario...
+                {isEditMode ? "Guardando..." : "Creando Usuario..."}
               </>
             ) : (
               <>
-                <UserPlus className="w-4 h-4 mr-2" />
-                Crear Usuario
+                {isEditMode ? (
+                  <Save className="w-4 h-4 mr-2" />
+                ) : (
+                  <UserPlus className="w-4 h-4 mr-2" />
+                )}
+                {isEditMode ? "Guardar Usuario" : "Crear Usuario"}
               </>
             )}
           </Button>
